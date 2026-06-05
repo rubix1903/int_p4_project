@@ -1,0 +1,6 @@
+# S2 - INT Transit Switch Commands
+table_add IntIngress.ipv4_lpm IntIngress.ipv4_forward 10.0.3.0/24 => 00:00:0a:00:03:02 2
+table_add IntIngress.ipv4_lpm IntIngress.ipv4_forward 10.0.1.0/24 => 00:00:0a:00:01:01 1
+
+# INT Transit role
+table_add IntIngress.int_transit_table IntIngress.int_set_transit 1 => 2

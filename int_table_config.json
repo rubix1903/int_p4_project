@@ -1,0 +1,254 @@
+{
+  "generated_at": "2026-04-04T13:32:14.822489",
+  "switches": {
+    "s1": [
+      {
+        "table": "IntIngress.ipv4_lpm",
+        "match": {
+          "ipv4.dst_addr": {
+            "lpm": {
+              "value": "10.0.2.0",
+              "length": 24
+            }
+          }
+        },
+        "action": {
+          "name": "IntIngress.ipv4_forward",
+          "params": {
+            "dst_mac": "00:00:00:02:02:00",
+            "port": 2
+          }
+        }
+      },
+      {
+        "table": "IntIngress.ipv4_lpm",
+        "match": {
+          "ipv4.dst_addr": {
+            "lpm": {
+              "value": "10.0.3.0",
+              "length": 24
+            }
+          }
+        },
+        "action": {
+          "name": "IntIngress.ipv4_forward",
+          "params": {
+            "dst_mac": "00:00:00:02:02:00",
+            "port": 2
+          }
+        }
+      },
+      {
+        "table": "IntIngress.int_source_table",
+        "match": {
+          "ipv4.src_addr": {
+            "ternary": {
+              "value": "10.0.1.0/24",
+              "mask": "255.255.255.255"
+            }
+          },
+          "ipv4.dst_addr": {
+            "ternary": {
+              "value": "10.0.3.0/24",
+              "mask": "255.255.255.255"
+            }
+          },
+          "l4_dst_port": {
+            "ternary": {
+              "value": 0,
+              "mask": 65535
+            }
+          }
+        },
+        "action": {
+          "name": "IntIngress.int_set_source",
+          "params": {}
+        }
+      },
+      {
+        "table": "IntIngress.int_transit_table",
+        "match": {
+          "int_shim.isValid": {
+            "exact": 1
+          }
+        },
+        "action": {
+          "name": "IntIngress.int_set_transit",
+          "params": {
+            "switch_id": 1
+          }
+        }
+      }
+    ],
+    "s2": [
+      {
+        "table": "IntIngress.ipv4_lpm",
+        "match": {
+          "ipv4.dst_addr": {
+            "lpm": {
+              "value": "10.0.3.0",
+              "length": 24
+            }
+          }
+        },
+        "action": {
+          "name": "IntIngress.ipv4_forward",
+          "params": {
+            "dst_mac": "00:00:00:03:03:00",
+            "port": 3
+          }
+        }
+      },
+      {
+        "table": "IntIngress.ipv4_lpm",
+        "match": {
+          "ipv4.dst_addr": {
+            "lpm": {
+              "value": "10.0.1.0",
+              "length": 24
+            }
+          }
+        },
+        "action": {
+          "name": "IntIngress.ipv4_forward",
+          "params": {
+            "dst_mac": "00:00:00:01:01:00",
+            "port": 1
+          }
+        }
+      },
+      {
+        "table": "IntIngress.int_transit_table",
+        "match": {
+          "int_shim.isValid": {
+            "exact": 1
+          }
+        },
+        "action": {
+          "name": "IntIngress.int_set_transit",
+          "params": {
+            "switch_id": 2
+          }
+        }
+      }
+    ],
+    "s3": [
+      {
+        "table": "IntIngress.ipv4_lpm",
+        "match": {
+          "ipv4.dst_addr": {
+            "lpm": {
+              "value": "10.0.3.2",
+              "length": 32
+            }
+          }
+        },
+        "action": {
+          "name": "IntIngress.ipv4_forward",
+          "params": {
+            "dst_mac": "00:00:00:03:03:02",
+            "port": 2
+          }
+        }
+      },
+      {
+        "table": "IntIngress.ipv4_lpm",
+        "match": {
+          "ipv4.dst_addr": {
+            "lpm": {
+              "value": "10.0.1.0",
+              "length": 24
+            }
+          }
+        },
+        "action": {
+          "name": "IntIngress.ipv4_forward",
+          "params": {
+            "dst_mac": "00:00:00:02:02:00",
+            "port": 1
+          }
+        }
+      },
+      {
+        "table": "IntIngress.int_transit_table",
+        "match": {
+          "int_shim.isValid": {
+            "exact": 1
+          }
+        },
+        "action": {
+          "name": "IntIngress.int_set_transit",
+          "params": {
+            "switch_id": 3
+          }
+        }
+      },
+      {
+        "table": "IntIngress.int_sink_table",
+        "match": {
+          "standard_metadata.egress_spec": {
+            "exact": 2
+          }
+        },
+        "action": {
+          "name": "IntIngress.int_set_sink",
+          "params": {
+            "switch_id": 3
+          }
+        }
+      }
+    ],
+    "s4": [
+      {
+        "table": "IntIngress.ipv4_lpm",
+        "match": {
+          "ipv4.dst_addr": {
+            "lpm": {
+              "value": "10.0.3.0",
+              "length": 24
+            }
+          }
+        },
+        "action": {
+          "name": "IntIngress.ipv4_forward",
+          "params": {
+            "dst_mac": "00:00:00:03:03:00",
+            "port": 2
+          }
+        }
+      },
+      {
+        "table": "IntIngress.ipv4_lpm",
+        "match": {
+          "ipv4.dst_addr": {
+            "lpm": {
+              "value": "10.0.1.0",
+              "length": 24
+            }
+          }
+        },
+        "action": {
+          "name": "IntIngress.ipv4_forward",
+          "params": {
+            "dst_mac": "00:00:00:01:01:00",
+            "port": 1
+          }
+        }
+      },
+      {
+        "table": "IntIngress.int_transit_table",
+        "match": {
+          "int_shim.isValid": {
+            "exact": 1
+          }
+        },
+        "action": {
+          "name": "IntIngress.int_set_transit",
+          "params": {
+            "switch_id": 4
+          }
+        }
+      }
+    ]
+  }
+}

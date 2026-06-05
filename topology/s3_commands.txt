@@ -1,0 +1,13 @@
+# S3 - INT Sink Switch Commands
+table_add IntIngress.ipv4_lpm IntIngress.ipv4_forward 10.0.3.2/32 => 00:00:0a:00:03:02 2
+table_add IntIngress.ipv4_lpm IntIngress.ipv4_forward 10.0.3.3/32 => 00:00:0a:00:03:03 3
+table_add IntIngress.ipv4_lpm IntIngress.ipv4_forward 10.0.1.0/24 => 00:00:0a:00:01:01 1
+
+# INT Transit role (adds its own metadata before sinking)
+table_add IntIngress.int_transit_table IntIngress.int_set_transit 1 => 3
+
+# INT Sink - port 2 exits INT domain (to h2)
+table_add IntIngress.int_sink_table IntIngress.int_set_sink 2 => 3
+
+# Mirror session for reports (send to collector at 10.0.3.3:54321)
+mirroring_add 500 3

@@ -1,0 +1,247 @@
+pkg_info {
+  arch: "v1model"
+}
+tables {
+  preamble {
+    id: 42422595
+    name: "IntIngress.ipv4_lpm"
+    alias: "ipv4_lpm"
+  }
+  match_fields {
+    id: 1
+    name: "hdr.ipv4.dst_addr"
+    bitwidth: 32
+    match_type: LPM
+  }
+  action_refs {
+    id: 22013488
+  }
+  action_refs {
+    id: 24700411
+  }
+  action_refs {
+    id: 21257015
+  }
+  size: 1024
+}
+tables {
+  preamble {
+    id: 49906731
+    name: "IntIngress.int_source_table"
+    alias: "int_source_table"
+  }
+  match_fields {
+    id: 1
+    name: "hdr.ipv4.src_addr"
+    bitwidth: 32
+    match_type: TERNARY
+  }
+  match_fields {
+    id: 2
+    name: "hdr.ipv4.dst_addr"
+    bitwidth: 32
+    match_type: TERNARY
+  }
+  match_fields {
+    id: 3
+    name: "meta.l4_src_port"
+    bitwidth: 16
+    match_type: TERNARY
+  }
+  match_fields {
+    id: 4
+    name: "meta.l4_dst_port"
+    bitwidth: 16
+    match_type: TERNARY
+  }
+  action_refs {
+    id: 22293932
+  }
+  action_refs {
+    id: 21257015
+  }
+  size: 256
+}
+tables {
+  preamble {
+    id: 35226346
+    name: "IntIngress.int_sink_table"
+    alias: "int_sink_table"
+  }
+  match_fields {
+    id: 1
+    name: "smeta.egress_spec"
+    bitwidth: 9
+    match_type: EXACT
+  }
+  action_refs {
+    id: 17969323
+  }
+  action_refs {
+    id: 21257015
+  }
+  size: 64
+}
+tables {
+  preamble {
+    id: 48051952
+    name: "IntIngress.int_transit_table"
+    alias: "int_transit_table"
+  }
+  match_fields {
+    id: 1
+    name: "hdr.int_shim.$valid$"
+    bitwidth: 1
+    match_type: EXACT
+  }
+  action_refs {
+    id: 20161058
+  }
+  action_refs {
+    id: 21257015
+  }
+  size: 2
+}
+actions {
+  preamble {
+    id: 21257015
+    name: "NoAction"
+    alias: "NoAction"
+    annotations: "@noWarn(\"unused\")"
+  }
+}
+actions {
+  preamble {
+    id: 22013488
+    name: "IntIngress.ipv4_forward"
+    alias: "ipv4_forward"
+  }
+  params {
+    id: 1
+    name: "dst_mac"
+    bitwidth: 48
+  }
+  params {
+    id: 2
+    name: "port"
+    bitwidth: 9
+  }
+}
+actions {
+  preamble {
+    id: 24700411
+    name: "IntIngress.drop_packet"
+    alias: "drop_packet"
+  }
+}
+actions {
+  preamble {
+    id: 22293932
+    name: "IntIngress.int_set_source"
+    alias: "int_set_source"
+  }
+}
+actions {
+  preamble {
+    id: 17969323
+    name: "IntIngress.int_set_sink"
+    alias: "int_set_sink"
+  }
+  params {
+    id: 1
+    name: "switch_id"
+    bitwidth: 32
+  }
+}
+actions {
+  preamble {
+    id: 20161058
+    name: "IntIngress.int_set_transit"
+    alias: "int_set_transit"
+  }
+  params {
+    id: 1
+    name: "switch_id"
+    bitwidth: 32
+  }
+}
+actions {
+  preamble {
+    id: 17424421
+    name: "IntEgress.int_source_add_shim"
+    alias: "int_source_add_shim"
+  }
+}
+actions {
+  preamble {
+    id: 23064671
+    name: "IntEgress.int_transit_add_switch_id"
+    alias: "int_transit_add_switch_id"
+  }
+}
+actions {
+  preamble {
+    id: 30074045
+    name: "IntEgress.int_transit_add_port_ids"
+    alias: "int_transit_add_port_ids"
+  }
+}
+actions {
+  preamble {
+    id: 19394822
+    name: "IntEgress.int_transit_add_hop_latency"
+    alias: "int_transit_add_hop_latency"
+  }
+}
+actions {
+  preamble {
+    id: 22415056
+    name: "IntEgress.int_transit_add_q_occupancy"
+    alias: "int_transit_add_q_occupancy"
+  }
+}
+actions {
+  preamble {
+    id: 29159043
+    name: "IntEgress.int_transit_add_ingress_tstamp"
+    alias: "int_transit_add_ingress_tstamp"
+  }
+}
+actions {
+  preamble {
+    id: 31457368
+    name: "IntEgress.int_sink_remove_headers"
+    alias: "int_sink_remove_headers"
+  }
+}
+actions {
+  preamble {
+    id: 18659634
+    name: "IntEgress.int_sink_generate_report"
+    alias: "int_sink_generate_report"
+  }
+}
+counters {
+  preamble {
+    id: 318028198
+    name: "IntIngress.ingress_pkt_counter"
+    alias: "ingress_pkt_counter"
+  }
+  spec {
+    unit: BOTH
+  }
+  size: 1024
+}
+counters {
+  preamble {
+    id: 310227250
+    name: "IntIngress.int_pkt_counter"
+    alias: "int_pkt_counter"
+  }
+  spec {
+    unit: BOTH
+  }
+  size: 1024
+}
+type_info {
+}
