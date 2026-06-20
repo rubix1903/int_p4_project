@@ -11,3 +11,9 @@ table_add IntIngress.int_sink_table IntIngress.int_set_sink 2 => 3
 
 # Mirror session for reports (send to collector at 10.0.3.3:54321)
 mirroring_add 500 3
+
+# Report-encapsulation identity for the sink. Only an entry keyed on
+# sink==1 matters here - this fills in the outer Ethernet/IP/UDP
+# headers that IntEgress builds for the cloned report copy.
+# Args: switch_mac switch_ip collector_mac collector_ip collector_port
+table_add IntIngress.int_report_config IntIngress.int_set_report_config 1 => 00:00:0a:00:03:01 10.0.3.1 00:00:0a:00:03:03 10.0.3.3 54321

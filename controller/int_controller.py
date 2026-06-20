@@ -32,6 +32,7 @@ logger = logging.getLogger("INT-Controller")
 # ---------------------------------------------------------------
 COLLECTOR_HOST = "0.0.0.0"
 COLLECTOR_PORT = 54321
+COLLECTOR_IFACE = "col-eth0"  # matches int_topology.py's addNodeIntfData() name
 BUFFER_SIZE    = 65535
 
 # INT Instruction Bitmap
@@ -90,6 +91,8 @@ class TelemetryReport:
     hops:         List[HopMetadata] = field(default_factory=list)
     total_latency_ns: int = 0
     hop_count:    int = 0
+    seq_no:       int = 0
+    node_id:      int = 0
 
     def path_string(self) -> str:
         """Human-readable path through the network"""
@@ -128,39 +131,61 @@ class TelemetryReport:
 class IntReportDecoder:
     """Parses raw UDP packets from INT sink nodes into TelemetryReport objects"""
 
-    ETH_HDR_LEN   = 14
-    IPV4_HDR_LEN  = 20
-    UDP_HDR_LEN   = 8
-    INT_SHIM_LEN  = 4
-    INT_HDR_LEN   = 8
+    OUTER_ETH_HDR_LEN         = 14
+    OUTER_IPV4_HDR_LEN        = 20
+    OUTER_UDP_HDR_LEN         = 8
+    REPORT_GROUP_HDR_LEN      = 9   # ver/hw_id(1) + seq_no(4) + node_id(4)
+    REPORT_INDIVIDUAL_HDR_LEN = 4
+    INNER_ETH_HDR_LEN         = 14
+    IPV4_HDR_LEN              = 20
+    UDP_HDR_LEN               = 8
+    TCP_HDR_LEN               = 20
+    INT_SHIM_LEN              = 4
+    INT_HDR_LEN               = 8
+    INT_TAIL_LEN              = 4
 
     def decode(self, raw_packet: bytes) -> Optional[TelemetryReport]:
         """
-        Full packet structure at collector:
-        Ethernet | IP (outer) | UDP (outer) → INT Report Header
-        → Original Ethernet | Original IP | Original L4 | INT Shim
-        | INT Header | [Hop Metadata × N]
+        `raw_packet` here is a full captured L2 frame (see IntCollector,
+        which uses a raw AF_PACKET socket rather than a normal UDP
+        socket - the mirrored report packet from the switch isn't
+        addressed in a way a regular IP socket would ever deliver):
+
+        Ethernet | IP (outer) | UDP (outer)
+        → Report Group Hdr | Report Individual Hdr
+        → Original Ethernet | Original IP | Original L4
+        | INT Shim | INT Header | [Hop Metadata × N] (hop-major)
         """
         try:
-            offset = self.ETH_HDR_LEN + self.IPV4_HDR_LEN + self.UDP_HDR_LEN
+            offset = (self.OUTER_ETH_HDR_LEN + self.OUTER_IPV4_HDR_LEN
+                      + self.OUTER_UDP_HDR_LEN)
 
-            # Parse inner IP header (original packet's IP)
-            if len(raw_packet) < offset + self.IPV4_HDR_LEN:
+            if len(raw_packet) < offset + self.REPORT_GROUP_HDR_LEN + self.REPORT_INDIVIDUAL_HDR_LEN:
                 return None
 
+            seq_no  = struct.unpack("!I", raw_packet[offset+1:offset+5])[0]
+            node_id = struct.unpack("!I", raw_packet[offset+5:offset+9])[0]
+            offset += self.REPORT_GROUP_HDR_LEN + self.REPORT_INDIVIDUAL_HDR_LEN
+
+            if len(raw_packet) < offset + self.INNER_ETH_HDR_LEN + self.IPV4_HDR_LEN:
+                return None
+
+            offset += self.INNER_ETH_HDR_LEN  # skip the inner Ethernet header
+
+            # Parse inner IP header (original packet's IP). NOTE:
+            # while INT data is present, protocol here reads as
+            # PROTO_INT_SHIM (0xFD) - int_source_add_shim() in int.p4
+            # rewrites it so downstream parsers know to look for an
+            # INT stack instead of a normal L4 header. The TRUE L4
+            # protocol is saved in int_tail.next_proto and restored
+            # below.
             inner_ip = raw_packet[offset:offset + self.IPV4_HDR_LEN]
             src_ip   = socket.inet_ntoa(inner_ip[12:16])
             dst_ip   = socket.inet_ntoa(inner_ip[16:20])
-            proto    = inner_ip[9]
             offset  += self.IPV4_HDR_LEN
 
-            # Parse L4 (TCP/UDP ports)
-            src_port, dst_port = struct.unpack("!HH", raw_packet[offset:offset+4])
-            offset += 8  # skip L4 header (simplified)
-
-            flow = FlowKey(src_ip, dst_ip, src_port, dst_port, proto)
-
-            # Parse INT Shim
+            # INT shim and header sit directly after the IP header -
+            # there is no L4 header in between while INT is present.
             if len(raw_packet) < offset + self.INT_SHIM_LEN:
                 return None
             int_type, _, shim_len, _ = struct.unpack(
@@ -168,7 +193,6 @@ class IntReportDecoder:
             )
             offset += self.INT_SHIM_LEN
 
-            # Parse INT Header
             if len(raw_packet) < offset + self.INT_HDR_LEN:
                 return None
             (flags_ver, hop_meta_len, remaining_hops,
@@ -177,29 +201,21 @@ class IntReportDecoder:
             )
             offset += self.INT_HDR_LEN
 
-            # Decode hop count: initial remaining=6, so hops_traversed = initial - current
-            # remaining_hops is the value AT SINK after all decrements
-            # Each transit decrements by 1, so hops = 6 - remaining_hops
-            # But if remaining_hops field is the ORIGINAL remaining count (not yet decremented),
-            # we calculate from shim_len instead:
-            # shim_len is in 4-byte words; each hop adds hop_meta_len words
-            hop_metadata_words_per_hop = hop_meta_len if hop_meta_len > 0 else 5
-            # shim_len = total INT words (shim + hdr + data)
-            # shim itself = 1 word, hdr = 2 words, so data_words = shim_len - 3
-            metadata_words = max(0, int(shim_len) - 3)
-            hop_count = (metadata_words // hop_metadata_words_per_hop
+            # shim_len is the cumulative metadata word count inserted by
+            # every hop so far (NOT including the shim/header themselves -
+            # see int_source_add_shim() in int.p4). hop_meta_len is the
+            # fixed per-hop word count for whatever fields the
+            # instruction mask selects (8 words for the default 6-field
+            # mask: 4 single-word fields + 2 double-word timestamps).
+            hop_metadata_words_per_hop = hop_meta_len if hop_meta_len > 0 else 8
+            hop_count = (shim_len // hop_metadata_words_per_hop
                          if hop_metadata_words_per_hop > 0 else 0)
-            # If shim_len didn't encode it, fall back to remaining_hops
-            if hop_count == 0 and remaining_hops < 6:
-                hop_count = 6 - remaining_hops
 
-            report = TelemetryReport(
-                timestamp=time.time(),
-                flow=flow,
-                hop_count=hop_count
-            )
+            hops: List[HopMetadata] = []
 
-            # Parse hop metadata according to instruction mask
+            # Parse hop metadata, hop-major: all selected fields for hop
+            # 0 (most recent), then all selected fields for hop 1, etc.
+            # This must mirror IntDeparser's emit order exactly.
             total_latency = 0
             for hop_idx in range(hop_count):
                 hop = HopMetadata()
@@ -241,10 +257,47 @@ class IntReportDecoder:
                         )[0]
                         offset += 8
 
-                report.hops.append(hop)
+                if instruction_mask & INT_EGRESS_TSTAMP_MASK:
+                    if offset + 8 <= len(raw_packet):
+                        hop.egress_tstamp = struct.unpack(
+                            "!Q", raw_packet[offset:offset+8]
+                        )[0]
+                        offset += 8
 
-            report.total_latency_ns = total_latency
+                hops.append(hop)
+
+            # int_tail comes right after the metadata stack. It carries
+            # the TRUE L4 protocol (saved before the source overwrote
+            # ipv4.protocol with PROTO_INT_SHIM) and the flow's
+            # destination port - both needed to classify the flow,
+            # since the inner IP header's protocol field itself just
+            # reads as the INT marker while INT data is present.
+            if len(raw_packet) < offset + self.INT_TAIL_LEN:
+                return None
+            next_proto, dest_port, _dscp = struct.unpack(
+                "!BHB", raw_packet[offset:offset + self.INT_TAIL_LEN]
+            )
+            offset += self.INT_TAIL_LEN
+
+            # The original L4 header follows int_tail. We only need its
+            # source port (first 2 bytes, same position for TCP or UDP);
+            # destination port is already known from int_tail.
+            src_port = 0
+            if offset + 2 <= len(raw_packet):
+                src_port = struct.unpack("!H", raw_packet[offset:offset+2])[0]
+
+            flow = FlowKey(src_ip, dst_ip, src_port, dest_port, next_proto)
+            report = TelemetryReport(
+                timestamp=time.time(),
+                flow=flow,
+                hops=hops,
+                hop_count=hop_count,
+                total_latency_ns=total_latency,
+            )
+            report.seq_no = seq_no
+            report.node_id = node_id
             return report
+
 
         except Exception as exc:
             logger.debug(f"Failed to decode INT report: {exc}")
@@ -318,13 +371,27 @@ class FlowTracker:
 # ---------------------------------------------------------------
 class IntCollector:
     """
-    UDP server that receives INT reports from sink nodes.
-    Decodes and forwards to FlowTracker.
+    Raw-capture listener that receives INT reports from sink nodes.
+
+    IMPORTANT: this deliberately does NOT use a normal AF_INET/
+    SOCK_DGRAM socket. The report that a sink switch sends is a mirror
+    of an in-flight packet, addressed (at the IP/MAC layer of the
+    OUTER report header we build in int.p4) directly at this host -
+    but it still arrives as an ordinary Ethernet frame on this host's
+    interface, and we want the FULL frame, not just a UDP payload, so
+    a raw AF_PACKET socket bound to the collector's interface is the
+    right tool here, mirroring how the IntReportDecoder below is
+    written (it expects to see the outer Ethernet/IP/UDP headers
+    itself, not have them stripped away by the kernel first).
     """
 
-    def __init__(self, host: str, port: int, tracker: FlowTracker):
+    ETH_P_ALL = 0x0003
+
+    def __init__(self, host: str, port: int, tracker: FlowTracker,
+                 iface: str = COLLECTOR_IFACE):
         self.host    = host
         self.port    = port
+        self.iface   = iface
         self.tracker = tracker
         self.decoder = IntReportDecoder()
         self._running = False
@@ -333,11 +400,13 @@ class IntCollector:
 
     def start(self):
         self._running = True
-        self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self._sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self._sock.bind((self.host, self.port))
+        self._sock = socket.socket(socket.AF_PACKET, socket.SOCK_RAW,
+                                    socket.htons(self.ETH_P_ALL))
+        if self.iface:
+            self._sock.bind((self.iface, 0))
         self._sock.settimeout(1.0)
-        logger.info(f"INT Collector listening on {self.host}:{self.port}")
+        logger.info(f"INT Collector listening on {self.iface or '(all interfaces)'} "
+                    f"for reports addressed to UDP/{self.port}")
 
         thread = threading.Thread(target=self._recv_loop, daemon=True)
         thread.start()
@@ -347,10 +416,24 @@ class IntCollector:
         if self._sock:
             self._sock.close()
 
+    def _is_report_for_us(self, data: bytes) -> bool:
+        """Cheap pre-filter so we don't try to decode every frame on
+        the wire (ARP, other hosts' traffic, etc.) as an INT report."""
+        if len(data) < 14 + 20 + 8:
+            return False
+        if data[12:14] != b"\x08\x00":          # not IPv4
+            return False
+        if data[14 + 9] != 17:                  # not UDP
+            return False
+        dst_port = struct.unpack("!H", data[14 + 20 + 2:14 + 20 + 4])[0]
+        return dst_port == self.port
+
     def _recv_loop(self):
         while self._running:
             try:
                 data, addr = self._sock.recvfrom(BUFFER_SIZE)
+                if not self._is_report_for_us(data):
+                    continue
                 self.stats["received"] += 1
 
                 report = self.decoder.decode(data)

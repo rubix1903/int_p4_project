@@ -78,14 +78,25 @@ def build_int_header(remaining_hops=3, instruction_mask=0xFC00,
 
 
 def build_int_shim_with_len(hops, hop_meta_len=5):
-    """Calculate correct shim length: INT header (2 words) + hop data"""
-    # shim_len = INT_SHIM(1 word) + INT_HDR(2 words) + hop_data
-    # The shim length field covers everything from shim to tail (in 4-byte words)
-    shim_words = 1  # shim itself
-    hdr_words  = 2  # INT header
+    """shim.length tracks ONLY the cumulative metadata word count
+    inserted by hops so far - see int_source_add_shim()/the transit
+    metadata-insertion block in int.p4, which only ever adds
+    insert_byte_cnt>>2 (never the shim/header's own fixed size)."""
     data_words = hops * hop_meta_len
-    total = shim_words + hdr_words + data_words
-    return struct.pack("!BBBB", 1, 0, total, 0)  # int_type=1
+    return struct.pack("!BBBB", 1, 0, data_words, 0)  # int_type=1
+
+
+def build_int_tail(next_proto=17, dest_port=5001, dscp=0):
+    return struct.pack("!BHB", next_proto, dest_port, dscp)
+
+
+def build_report_headers(seq_no=1, node_id=1):
+    """9-byte report_group_header_t + 4-byte report_individual_header_t,
+    the outer report wrapper int.p4's IntEgress builds for the cloned
+    copy sent to the collector."""
+    group = struct.pack("!B", 0) + struct.pack("!I", seq_no) + struct.pack("!I", node_id)
+    individual = struct.pack("!BBH", 0x10, 0, 0)
+    return group + individual
 
 
 def build_int_switch_id(switch_id):
@@ -109,14 +120,18 @@ def build_int_ingress_tstamp(tstamp):
     return struct.pack("!Q", tstamp)
 
 
-def build_test_int_packet(hops_data, instruction_mask=0xF800, remaining=3):
+def build_test_int_packet(hops_data, instruction_mask=0xF800, remaining=3,
+                          orig_proto=17, orig_src_port=12345, orig_dst_port=5001):
     """
-    Builds a complete fake INT packet with the given hop metadata.
+    Builds a complete fake INT packet with the given hop metadata,
+    matching int.p4's real wire format: the IP header's protocol
+    field is rewritten to PROTO_INT_SHIM (0xFD) at the source, so the
+    INT shim/header/metadata/tail sit directly after the IP header;
+    the ORIGINAL L4 header (whatever it was) follows int_tail.
     hops_data = list of dicts: {switch_id, ingress, egress, latency, q_occ, tstamp}
     """
+    PROTO_INT_SHIM = 0xFD
     eth   = build_eth_header()
-    ipv4  = build_ipv4_header()
-    udp   = build_udp_header()
 
     hop_meta_len = bin(instruction_mask).count("1")  # words per hop = # of set bits
     shim  = build_int_shim_with_len(len(hops_data), hop_meta_len=hop_meta_len)
@@ -136,8 +151,18 @@ def build_test_int_packet(hops_data, instruction_mask=0xF800, remaining=3):
             meta_bytes += build_int_q_occupancy(0, hop.get("q_occ", 0))
         if instruction_mask & 0x0800:
             meta_bytes += build_int_ingress_tstamp(hop.get("tstamp", 0))
+        if instruction_mask & 0x0400:
+            meta_bytes += struct.pack("!Q", hop.get("egress_tstamp", 0))
 
-    return eth + ipv4 + udp + shim + hdr + meta_bytes
+    tail = build_int_tail(next_proto=orig_proto, dest_port=orig_dst_port)
+    orig_l4 = build_udp_header(src_port=orig_src_port, dst_port=orig_dst_port, length=8)
+
+    ipv4 = build_ipv4_header(
+        proto=PROTO_INT_SHIM,
+        total_len=20 + len(shim) + len(hdr) + len(meta_bytes) + len(tail) + len(orig_l4)
+    )
+
+    return eth + ipv4 + shim + hdr + meta_bytes + tail + orig_l4
 
 
 # ---------------------------------------------------------------
@@ -302,29 +327,38 @@ class TestIntReportDecoder(unittest.TestCase):
              "latency": 5_000, "q_occ": 100, "tstamp": 1_000_000},
             {"switch_id": 2, "ingress": 1, "egress": 3,
              "latency": 8_000, "q_occ": 200, "tstamp": 1_005_000},
-            {"switch_id": 3, "ingress": 1, "egress": 2,
-             "latency": 3_000, "q_occ": 50,  "tstamp": 1_013_000},
         ]
 
-        # INT packet is the inner packet; outer wrapper (eth+ip+udp) carries it to collector
         instruction_mask = 0xF800  # SW_ID | PORTS | LATENCY | QUEUE | TSTAMP = 5 words/hop
-        inner_pkt = build_test_int_packet(hops, instruction_mask=instruction_mask, remaining=3)
+        inner_pkt = build_test_int_packet(hops, instruction_mask=instruction_mask, remaining=4,
+                                          orig_proto=17, orig_src_port=33333, orig_dst_port=5001)
 
-        # Wrap in outer Ethernet+IP+UDP (as the mirror/clone would produce)
+        # Wrap in outer Ethernet+IP+UDP+report-headers (as the I2E clone
+        # built by IntEgress in int.p4 would produce)
+        report_hdrs = build_report_headers(seq_no=7, node_id=99)
         outer_eth  = build_eth_header()
-        outer_ipv4 = build_ipv4_header(src="10.0.3.3", dst="10.0.3.3",  # collector
-                                        proto=17, total_len=len(inner_pkt) + 28)
+        outer_ipv4 = build_ipv4_header(src="10.0.3.1", dst="10.0.3.3",
+                                        proto=17, total_len=len(report_hdrs) + len(inner_pkt) + 28)
         outer_udp  = build_udp_header(src_port=49999, dst_port=54321,
-                                       length=len(inner_pkt) + 8)
-        full_pkt = outer_eth + outer_ipv4 + outer_udp + inner_pkt
+                                       length=len(report_hdrs) + len(inner_pkt) + 8)
+        full_pkt = outer_eth + outer_ipv4 + outer_udp + report_hdrs + inner_pkt
 
         decoder = IntReportDecoder()
         report = decoder.decode(full_pkt)
 
-        # Report may be None if inner structure doesn't parse cleanly (tolerate)
-        # Key check: decoder doesn't crash and handles the packet gracefully
-        # In a live BMv2 environment the sink generates properly formatted reports
-        self.assertIsNotNone(report)  # Decoder must return a report object
+        self.assertIsNotNone(report)
+        self.assertEqual(report.hop_count, 2)
+        self.assertEqual(report.seq_no, 7)
+        self.assertEqual(report.node_id, 99)
+        self.assertEqual(report.flow.src_port, 33333)
+        self.assertEqual(report.flow.dst_port, 5001)
+        self.assertEqual(report.flow.proto, 17)
+        # hop-major, most-recent-first
+        self.assertEqual(report.hops[0].switch_id, 1)
+        self.assertEqual(report.hops[0].hop_latency_ns, 5_000)
+        self.assertEqual(report.hops[1].switch_id, 2)
+        self.assertEqual(report.hops[1].hop_latency_ns, 8_000)
+        self.assertEqual(report.total_latency_ns, 13_000)
 
     def test_decode_empty_packet(self):
         """Empty packet should return None"""
@@ -345,14 +379,18 @@ class TestIntReportDecoder(unittest.TestCase):
              "latency": 12_500, "q_occ": 0, "tstamp": 9_999_999}
         ]
         inner = build_test_int_packet(hops, instruction_mask=0xF800, remaining=5)
+        report_hdrs = build_report_headers(seq_no=1, node_id=5)
         outer_eth  = build_eth_header()
-        outer_ipv4 = build_ipv4_header(proto=17, total_len=len(inner)+28)
-        outer_udp  = build_udp_header(length=len(inner)+8)
-        full_pkt = outer_eth + outer_ipv4 + outer_udp + inner
+        outer_ipv4 = build_ipv4_header(proto=17, total_len=len(report_hdrs)+len(inner)+28)
+        outer_udp  = build_udp_header(length=len(report_hdrs)+len(inner)+8)
+        full_pkt = outer_eth + outer_ipv4 + outer_udp + report_hdrs + inner
 
         decoder = IntReportDecoder()
         report = decoder.decode(full_pkt)
         self.assertIsNotNone(report)
+        self.assertEqual(report.hop_count, 1)
+        self.assertEqual(report.hops[0].switch_id, 5)
+        self.assertEqual(report.hops[0].hop_latency_ns, 12_500)
 
 
 # ---------------------------------------------------------------

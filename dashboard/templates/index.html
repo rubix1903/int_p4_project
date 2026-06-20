@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>INT Real-Time Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { background-color: #020617; color: #60a5fa; font-family: 'Inter', sans-serif; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid #1e40af; }
+    </style>
+</head>
+<body class="p-8">
+    <div class="max-w-6xl mx-auto">
+        <header class="flex justify-between items-center mb-10 border-b border-blue-900 pb-4">
+            <h1 class="text-3xl font-bold tracking-tighter text-blue-400">P4 NETWORK <span class="text-white">INTEL</span></h1>
+            <div class="flex gap-4">
+                <div class="glass px-4 py-1 rounded-full text-xs animate-pulse">● LIVE DATA PLANE</div>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <div class="glass p-6 rounded-2xl">
+                <h3 class="text-blue-500 text-sm font-semibold uppercase">Avg Hop Latency</h3>
+                <p id="latency-val" class="text-4xl font-mono text-white mt-2">0ns</p>
+            </div>
+            <div class="glass p-6 rounded-2xl">
+                <h3 class="text-blue-500 text-sm font-semibold uppercase">Active Switches</h3>
+                <p class="text-4xl font-mono text-white mt-2">4</p>
+            </div>
+            <div class="glass p-6 rounded-2xl">
+                <h3 class="text-blue-500 text-sm font-semibold uppercase">Packet Status</h3>
+                <p class="text-4xl font-mono text-green-400 mt-2">HEALTHY</p>
+            </div>
+        </div>
+
+        <div class="glass p-8 rounded-3xl">
+            <canvas id="latencyChart" height="100"></canvas>
+        </div>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('latencyChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: { labels: [], datasets: [{ label: 'Hop Latency (ns)', data: [], borderColor: '#3b82f6', tension: 0.4, fill: true, backgroundColor: 'rgba(59, 130, 246, 0.1)' }] },
+            options: { scales: { y: { beginAtZero: true, grid: { color: '#1e293b' } }, x: { grid: { display: false } } } }
+        });
+
+        const socket = io();
+        socket.on('telemetry_update', (data) => {
+            document.getElementById('latency-val').innerText = data.latency + "ns";
+            if(chart.data.labels.length > 20) { chart.data.labels.shift(); chart.data.datasets[0].data.shift(); }
+            chart.data.labels.push("");
+            chart.data.datasets[0].data.push(data.latency);
+            chart.update();
+        });
+    </script>
+</body>
+</html>
