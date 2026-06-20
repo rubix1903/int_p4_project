@@ -1,7 +1,5 @@
-#!/usr/bin/env python3
 """
 INT Automated Test Suite
-========================
 Tests INT header insertion, metadata collection, and report generation
 without requiring a live P4 switch.
 
@@ -28,9 +26,9 @@ from int_controller import (
 )
 
 
-# ---------------------------------------------------------------
+
 # Packet Builder helpers (for constructing test packets)
-# ---------------------------------------------------------------
+# --------------------------------------------------------
 def build_eth_header(src="aa:bb:cc:dd:ee:01", dst="aa:bb:cc:dd:ee:02",
                      ether_type=0x0800):
     src_bytes = bytes(int(x, 16) for x in src.split(":"))
@@ -165,9 +163,9 @@ def build_test_int_packet(hops_data, instruction_mask=0xF800, remaining=3,
     return eth + ipv4 + shim + hdr + meta_bytes + tail + orig_l4
 
 
-# ---------------------------------------------------------------
+
 # Test Cases
-# ---------------------------------------------------------------
+# --------------
 class TestHopMetadata(unittest.TestCase):
     """Unit tests for HopMetadata dataclass"""
 
@@ -393,9 +391,9 @@ class TestIntReportDecoder(unittest.TestCase):
         self.assertEqual(report.hops[0].hop_latency_ns, 12_500)
 
 
-# ---------------------------------------------------------------
+
 # Integration-style test: full pipeline simulation
-# ---------------------------------------------------------------
+# -------------------------------------------------------
 class TestIntPipeline(unittest.TestCase):
     """End-to-end pipeline simulation without a live switch"""
 
@@ -456,9 +454,8 @@ class TestIntPipeline(unittest.TestCase):
         self.assertIn("SW1", stats["current_path"])
 
 
-# ---------------------------------------------------------------
 # Entry Point
-# ---------------------------------------------------------------
+# -----------------
 if __name__ == "__main__":
     print("=" * 60)
     print("INT Project - Automated Test Suite")
