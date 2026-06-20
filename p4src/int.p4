@@ -1,29 +1,29 @@
-/* ============================================================
- * In-band Network Telemetry (INT) - P4_16 Implementation
- * Target: BMv2 simple_switch
- *
- * Architecture:
- *   - INT Source Node  : stamps packets with INT header + metadata
- *   - INT Transit Node : appends its own hop-level metadata
- *   - INT Sink Node    : strips INT headers, mirrors report to collector
- *
- * Metadata collected per-hop:
- *   [1] Switch ID
- *   [2] Ingress + Egress Port IDs
- *   [3] Hop Latency (nanoseconds)
- *   [4] Queue Occupancy
- *   [5] Ingress Timestamp
- *   [6] Egress Timestamp
- *   [7] Queue Congestion Status
- *   [8] Egress Port TX Utilization
- * ============================================================ */
+"""
+  In-band Network Telemetry (INT) - P4_16 Implementation
+  Target: BMv2 simple_switch
+
+  Architecture:
+    - INT Source Node  : stamps packets with INT header + metadata
+    - INT Transit Node : appends its own hop-level metadata
+    - INT Sink Node    : strips INT headers, mirrors report to collector
+
+  Metadata collected per-hop:
+    [1] Switch ID
+    [2] Ingress + Egress Port IDs
+    [3] Hop Latency (nanoseconds)
+    [4] Queue Occupancy
+    [5] Ingress Timestamp
+    [6] Egress Timestamp
+    [7] Queue Congestion Status
+    [8] Egress Port TX Utilization
+ """
 
 #include <core.p4>
 #include <v1model.p4>
 
-/* ============================================================
- * CONSTANTS
- * ============================================================ */
+
+/* CONSTANTS
+ * -----------*/
 const bit<16> TYPE_IPV4      = 0x0800;
 const bit<8>  PROTO_TCP      = 6;
 const bit<8>  PROTO_UDP      = 17;
@@ -52,9 +52,9 @@ const bit<32> PKT_INSTANCE_TYPE_INGRESS_CLONE = 1;
 /* Fixed INT overhead added once at the source: shim(4B) + header(8B) + tail(4B) */
 const bit<16> INT_FIXED_OVERHEAD_BYTES = 16;
 
-/* ============================================================
- * HEADERS
- * ============================================================ */
+
+/* HEADERS
+ * -----------*/
 
 /* Standard Ethernet */
 header ethernet_t {
@@ -102,10 +102,10 @@ header udp_t {
     bit<16> checksum;
 }
 
-/* ============================================================
- * INT Shim Header (inserted between L4 and payload)
+
+/* INT Shim Header (inserted between L4 and payload)
  * Signals to downstream nodes that packet carries INT data
- * ============================================================ */
+ * ----------------------------------------------------------*/
 header int_shim_t {
     bit<8>  int_type;        /* 1 = hop-by-hop */
     bit<8>  rsvd1;
@@ -113,9 +113,9 @@ header int_shim_t {
     bit<8>  orig_dscp;       /* original DSCP value before INT marking */
 }
 
-/* ============================================================
- * INT Header (Metadata Stack Header)
- * ============================================================ */
+
+/* INT Header (Metadata Stack Header)
+ * ---------------------------------------*/
 header int_header_t {
     bit<4>  ver;
     bit<2>  rep;
@@ -130,10 +130,10 @@ header int_header_t {
     bit<16> rsvd3;
 }
 
-/* ============================================================
- * INT Metadata (per-hop, appended by each transit switch)
+
+/* INT Metadata (per-hop, appended by each transit switch)
  * Each field is present only if corresponding instruction bit=1
- * ============================================================ */
+ * ---------------------------------------------------------------- */
 header int_switch_id_t {
     bit<32> switch_id;
 }
@@ -169,18 +169,17 @@ header int_egress_tx_util_t {
     bit<32> egress_tx_util;  /* bits per second utilization */
 }
 
-/* ============================================================
- * INT Tail Header (marks end of INT stack, before payload)
- * ============================================================ */
+
+/* INT Tail Header (marks end of INT stack, before payload)
+ * -----------------------------------------------------------*/
 header int_tail_t {
     bit<8>  next_proto;      /* original protocol above shim */
     bit<16> dest_port;       /* destination port of original flow */
     bit<8>  dscp;
 }
 
-/* ============================================================
- * Telemetry Report Headers (sent to collector)
- * ============================================================ */
+/* Telemetry Report Headers (sent to collector)
+ * ------------------------------------------------------*/
 header report_group_header_t {
     bit<4>  ver;
     bit<4>  hw_id;
@@ -198,9 +197,9 @@ header report_individual_header_t {
     bit<16> hw_id;
 }
 
-/* ============================================================
- * HEADER STACK - supports up to 6 hops
- * ============================================================ */
+
+/* HEADER STACK - supports up to 6 hops
+ * -------------------------------------*/
 struct headers_t {
     /* Outer encapsulation used ONLY for the cloned report sent to the
      * collector. Invalid (and therefore zero bytes on the wire) for
@@ -233,9 +232,9 @@ struct headers_t {
     int_tail_t                int_tail;
 }
 
-/* ============================================================
- * METADATA
- * ============================================================ */
+
+/* METADATA
+ * -----------------*/
 struct int_metadata_t {
     bit<1>  source;           /* this switch is INT source */
     bit<1>  sink;             /* this switch is INT sink */
@@ -272,9 +271,9 @@ struct metadata_t {
 }
 
 
-/* ============================================================
- * PARSER
- * ============================================================ */
+
+/* PARSER
+ * -----------*/
 parser IntParser(
     packet_in packet,
     out headers_t hdr,
@@ -427,9 +426,9 @@ parser IntParser(
     }
 }
 
-/* ============================================================
- * CHECKSUM VERIFICATION
- * ============================================================ */
+
+/* CHECKSUM VERIFICATION
+ * -------------------------- */
 control IntVerifyChecksum(
     inout headers_t hdr,
     inout metadata_t meta
@@ -449,19 +448,19 @@ control IntVerifyChecksum(
     }
 }
 
-/* ============================================================
- * INGRESS PIPELINE
- * ============================================================ */
+
+/* INGRESS PIPELINE
+ * ------------------*/
 control IntIngress(
     inout headers_t hdr,
     inout metadata_t meta,
     inout standard_metadata_t smeta
 ) {
-    /* ---- Counters ---------------------------------------- */
+    /* ---- Counters ------------------------------------ */
     counter(1024, CounterType.packets_and_bytes) ingress_pkt_counter;
     counter(1024, CounterType.packets_and_bytes) int_pkt_counter;
 
-    /* ---- Actions ----------------------------------------- */
+    /* ---- Actions ---------------------------------------- */
 
     /* Standard IPv4 forwarding */
     action ipv4_forward(bit<48> dst_mac, bit<9> port) {
@@ -507,7 +506,7 @@ control IntIngress(
 
     register<bit<32>>(1) report_seq_reg;
 
-    /* ---- Tables ------------------------------------------ */
+    /* ---- Tables ---------------------------------------- */
 
     /* IPv4 Forwarding Table */
     table ipv4_lpm {
@@ -624,15 +623,15 @@ control IntIngress(
     }
 }
 
-/* ============================================================
- * EGRESS PIPELINE  ← This is where the INT magic happens
- * ============================================================ */
+
+/* EGRESS PIPELINE  ← This is where the INT magic happens
+* --------------------------------------------------------------*/
 control IntEgress(
     inout headers_t hdr,
     inout metadata_t meta,
     inout standard_metadata_t smeta
 ) {
-    /* ---- INT Source Actions ------------------------------ */
+    /* ---- INT Source Actions ----------------------------------- */
 
     /* Insert the INT shim + INT header into the packet */
     action int_source_add_shim() {
@@ -678,7 +677,7 @@ control IntEgress(
         hdr.ipv4.diffserv = 0x5C;
     }
 
-    /* ---- INT Transit Actions ----------------------------- */
+    /* ---- INT Transit Actions ---------------------------------- */
 
     /* Append Switch ID */
     action int_transit_add_switch_id() {
@@ -733,7 +732,7 @@ control IntEgress(
         meta.int_meta.insert_byte_cnt           = meta.int_meta.insert_byte_cnt + 8;
     }
 
-    /* ---- INT Sink Actions -------------------------------- */
+    /* ---- INT Sink Actions ----------------------------------- */
 
     /* Strip all INT headers, restore original DSCP */
     action int_sink_remove_headers() {
@@ -927,9 +926,8 @@ control IntEgress(
     }
 }
 
-/* ============================================================
- * CHECKSUM UPDATE
- * ============================================================ */
+/* CHECKSUM UPDATE
+ * ------------------*/
 control IntComputeChecksum(
     inout headers_t hdr,
     inout metadata_t meta
@@ -960,9 +958,9 @@ control IntComputeChecksum(
     }
 }
 
-/* ============================================================
- * DEPARSER
- * ============================================================ */
+
+/* DEPARSER
+ * -----------*/
 control IntDeparser(
     packet_out packet,
     in headers_t hdr
@@ -1043,9 +1041,9 @@ control IntDeparser(
     }
 }
 
-/* ============================================================
- * MAIN SWITCH INSTANTIATION
- * ============================================================ */
+
+/* MAIN SWITCH INSTANTIATION
+ * ----------------------------- */
 V1Switch(
     IntParser(),
     IntVerifyChecksum(),
