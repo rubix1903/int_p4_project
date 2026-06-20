@@ -1,7 +1,6 @@
-#!/usr/bin/env python3
 """
 INT Controller - Programs P4 tables and processes telemetry reports
-=================================================================
+
 Responsibilities:
   1. Configure forwarding tables (L2/L3)
   2. Install INT source/sink/transit roles on each switch
@@ -27,9 +26,8 @@ logging.basicConfig(
 )
 logger = logging.getLogger("INT-Controller")
 
-# ---------------------------------------------------------------
 # Constants
-# ---------------------------------------------------------------
+# --------------
 COLLECTOR_HOST = "0.0.0.0"
 COLLECTOR_PORT = 54321
 COLLECTOR_IFACE = "col-eth0"  # matches int_topology.py's addNodeIntfData() name
@@ -49,12 +47,12 @@ LATENCY_CRIT_NS    = 1_000_000  # 1 ms
 QUEUE_WARN_PCT     = 70         # 70% queue fill
 QUEUE_CRIT_PCT     = 90         # 90% queue fill
 
-# ---------------------------------------------------------------
+
 # Data Structures
-# ---------------------------------------------------------------
+#------------------
 @dataclass
 class HopMetadata:
-    """Metadata collected at a single network hop"""
+    #Metadata collected at a single network hop
     switch_id:        int = 0
     ingress_port:     int = 0
     egress_port:      int = 0
@@ -66,7 +64,7 @@ class HopMetadata:
 
 @dataclass
 class FlowKey:
-    """5-tuple flow identifier"""
+    #5-tuple flow identifier
     src_ip:   str
     dst_ip:   str
     src_port: int
@@ -85,7 +83,7 @@ class FlowKey:
 
 @dataclass
 class TelemetryReport:
-    """Decoded INT telemetry report from sink node"""
+    #Decoded INT telemetry report from sink node
     timestamp:    float
     flow:         FlowKey
     hops:         List[HopMetadata] = field(default_factory=list)
@@ -95,7 +93,7 @@ class TelemetryReport:
     node_id:      int = 0
 
     def path_string(self) -> str:
-        """Human-readable path through the network"""
+        #Human-readable path through the network
         parts = []
         for hop in self.hops:
             parts.append(
@@ -104,7 +102,7 @@ class TelemetryReport:
         return " ▶ ".join(parts)
 
     def anomalies(self) -> List[str]:
-        """Detect anomalous conditions in this report"""
+        #Detect anomalous conditions in this report
         issues = []
         if self.total_latency_ns > LATENCY_CRIT_NS:
             issues.append(f"🔴 CRITICAL latency: {self.total_latency_ns/1000:.1f}µs")
@@ -125,11 +123,10 @@ class TelemetryReport:
         return issues
 
 
-# ---------------------------------------------------------------
 # Telemetry Report Decoder
-# ---------------------------------------------------------------
+# ---------------------------
 class IntReportDecoder:
-    """Parses raw UDP packets from INT sink nodes into TelemetryReport objects"""
+    #Parses raw UDP packets from INT sink nodes into TelemetryReport objects
 
     OUTER_ETH_HDR_LEN         = 14
     OUTER_IPV4_HDR_LEN        = 20
@@ -154,7 +151,7 @@ class IntReportDecoder:
         Ethernet | IP (outer) | UDP (outer)
         → Report Group Hdr | Report Individual Hdr
         → Original Ethernet | Original IP | Original L4
-        | INT Shim | INT Header | [Hop Metadata × N] (hop-major)
+        | INT Shim | INT Header | [Hop Metadta × N] (hop-major)
         """
         try:
             offset = (self.OUTER_ETH_HDR_LEN + self.OUTER_IPV4_HDR_LEN
@@ -170,15 +167,16 @@ class IntReportDecoder:
             if len(raw_packet) < offset + self.INNER_ETH_HDR_LEN + self.IPV4_HDR_LEN:
                 return None
 
-            offset += self.INNER_ETH_HDR_LEN  # skip the inner Ethernet header
-
-            # Parse inner IP header (original packet's IP). NOTE:
-            # while INT data is present, protocol here reads as
-            # PROTO_INT_SHIM (0xFD) - int_source_add_shim() in int.p4
-            # rewrites it so downstream parsers know to look for an
-            # INT stack instead of a normal L4 header. The TRUE L4
-            # protocol is saved in int_tail.next_proto and restored
-            # below.
+            offset += self.INNER_ETH_HDR_LEN  # skips  the inner Ethernet header
+            """
+            Parse inner IP header (original packet's IP). 
+            NOTE:while INT data is present, protocol here reads as
+            PROTO_INT_SHIM (0xFD) - int_source_add_shim() in int.p4
+            rewrites it so downstream parsers know to look for an
+            INT stack instead of a normal L4 header. The TRUE L4
+            protocol is saved in int_tail.next_proto and restored
+            #below.
+            """
             inner_ip = raw_packet[offset:offset + self.IPV4_HDR_LEN]
             src_ip   = socket.inet_ntoa(inner_ip[12:16])
             dst_ip   = socket.inet_ntoa(inner_ip[16:20])
@@ -200,22 +198,24 @@ class IntReportDecoder:
                 "!HBBHH", raw_packet[offset:offset + self.INT_HDR_LEN]
             )
             offset += self.INT_HDR_LEN
-
-            # shim_len is the cumulative metadata word count inserted by
-            # every hop so far (NOT including the shim/header themselves -
-            # see int_source_add_shim() in int.p4). hop_meta_len is the
-            # fixed per-hop word count for whatever fields the
-            # instruction mask selects (8 words for the default 6-field
-            # mask: 4 single-word fields + 2 double-word timestamps).
+            """
+            shim_len is the cumulative metadata word count inserted by
+            every hop so far (NOT including the shim/header themselves -
+            see int_source_add_shim() in int.p4). hop_meta_len is the
+            fixed per-hop word count for whatever fields the
+            instruction mask selects (8 words for the default 6-field
+            mask: 4 single-word fields + 2 double-word timestamps).
+            """
             hop_metadata_words_per_hop = hop_meta_len if hop_meta_len > 0 else 8
             hop_count = (shim_len // hop_metadata_words_per_hop
                          if hop_metadata_words_per_hop > 0 else 0)
 
             hops: List[HopMetadata] = []
-
-            # Parse hop metadata, hop-major: all selected fields for hop
-            # 0 (most recent), then all selected fields for hop 1, etc.
-            # This must mirror IntDeparser's emit order exactly.
+            """
+            Parse hop metadata, hop-major: all selected fields for hop0 (most recent), 
+            then all selected fields for hop 1, etc.
+            This must mirror IntDeparser's emit order exactly.
+            """
             total_latency = 0
             for hop_idx in range(hop_count):
                 hop = HopMetadata()
@@ -265,23 +265,25 @@ class IntReportDecoder:
                         offset += 8
 
                 hops.append(hop)
-
-            # int_tail comes right after the metadata stack. It carries
-            # the TRUE L4 protocol (saved before the source overwrote
-            # ipv4.protocol with PROTO_INT_SHIM) and the flow's
-            # destination port - both needed to classify the flow,
-            # since the inner IP header's protocol field itself just
-            # reads as the INT marker while INT data is present.
+            """
+            int_tail comes right after the metadata stack. It carries
+            the TRUE L4 protocol (saved before the source overwrote
+            ipv4.protocol with PROTO_INT_SHIM) and the flow's
+            destination port - both needed to classify the flow,
+            since the inner IP header's protocol field itself just
+            reads as the INT marker while INT data is present.
+            """
             if len(raw_packet) < offset + self.INT_TAIL_LEN:
                 return None
             next_proto, dest_port, _dscp = struct.unpack(
                 "!BHB", raw_packet[offset:offset + self.INT_TAIL_LEN]
             )
             offset += self.INT_TAIL_LEN
-
-            # The original L4 header follows int_tail. We only need its
-            # source port (first 2 bytes, same position for TCP or UDP);
-            # destination port is already known from int_tail.
+            """
+            The original L4 header follows int_tail. We only need its
+            source port (first 2 bytes, same position for TCP or UDP);
+            destination port is already known from int_tail.
+            """
             src_port = 0
             if offset + 2 <= len(raw_packet):
                 src_port = struct.unpack("!H", raw_packet[offset:offset+2])[0]
@@ -304,9 +306,9 @@ class IntReportDecoder:
             return None
 
 
-# ---------------------------------------------------------------
+
 # Flow Statistics Tracker
-# ---------------------------------------------------------------
+# -------------------------
 class FlowTracker:
     """
     Maintains rolling statistics for all observed flows.
@@ -322,7 +324,7 @@ class FlowTracker:
         self.lock = threading.Lock()
 
     def record(self, report: TelemetryReport) -> List[str]:
-        """Record a report and return any new anomalies detected"""
+        # Records a report and returns any new anomalies detected
         events = []
         with self.lock:
             self.reports[report.flow].append(report)
@@ -343,7 +345,7 @@ class FlowTracker:
         return events
 
     def get_flow_stats(self, flow: FlowKey) -> dict:
-        """Compute aggregated stats for a flow"""
+        # Computes aggregated stats for a flow
         with self.lock:
             reps = list(self.reports.get(flow, []))
         if not reps:
@@ -366,9 +368,9 @@ class FlowTracker:
         return [self.get_flow_stats(f) for f in flows]
 
 
-# ---------------------------------------------------------------
+
 # Telemetry Collector (UDP listener)
-# ---------------------------------------------------------------
+# -------------------------------------
 class IntCollector:
     """
     Raw-capture listener that receives INT reports from sink nodes.
@@ -417,7 +419,7 @@ class IntCollector:
             self._sock.close()
 
     def _is_report_for_us(self, data: bytes) -> bool:
-        """Cheap pre-filter so we don't try to decode every frame on
+        """Cheap pre-filter so we don't try to decode it every frame on
         the wire (ARP, other hosts' traffic, etc.) as an INT report."""
         if len(data) < 14 + 20 + 8:
             return False
@@ -476,9 +478,9 @@ class IntCollector:
             logger.warning(event)
 
 
-# ---------------------------------------------------------------
+
 # P4Runtime Table Configurator (stub - real impl uses p4runtime_lib)
-# ---------------------------------------------------------------
+# ----------------------------------------------------------------------
 class IntTableConfigurator:
     """
     Programs INT roles into each switch's P4 tables.
@@ -490,7 +492,7 @@ class IntTableConfigurator:
         self.entries: Dict[str, list] = defaultdict(list)
 
     def configure_source(self, switch_id: str, flows: list):
-        """Install INT source entries - which flows get INT headers"""
+        # Installs INT source entries - which flows get INT headers
         for flow in flows:
             entry = {
                 "table": "IntIngress.int_source_table",
@@ -505,7 +507,7 @@ class IntTableConfigurator:
             logger.info(f"  [SW:{switch_id}] INT SOURCE enabled for {flow['src']} → {flow['dst']}")
 
     def configure_sink(self, switch_id: str, egress_ports: list, sw_id_num: int):
-        """Install INT sink entries - which ports exit the INT domain"""
+        #Installs INT sink entries - which ports exit the INT domain
         for port in egress_ports:
             entry = {
                 "table": "IntIngress.int_sink_table",
@@ -519,7 +521,7 @@ class IntTableConfigurator:
             logger.info(f"  [SW:{switch_id}] INT SINK on port {port}")
 
     def configure_transit(self, switch_id: str, sw_id_num: int):
-        """Configure switch as INT transit node"""
+        #Configure switch as INT transit node
         entry = {
             "table": "IntIngress.int_transit_table",
             "match": {"int_shim.isValid": {"exact": 1}},
@@ -532,7 +534,7 @@ class IntTableConfigurator:
         logger.info(f"  [SW:{switch_id}] INT TRANSIT configured (ID={sw_id_num})")
 
     def configure_forwarding(self, switch_id: str, routes: list):
-        """Install L3 forwarding entries"""
+        # Installed L3 forwarding entries
         for route in routes:
             entry = {
                 "table": "IntIngress.ipv4_lpm",
@@ -556,9 +558,9 @@ class IntTableConfigurator:
         return config
 
 
-# ---------------------------------------------------------------
+
 # Main Controller Orchestration
-# ---------------------------------------------------------------
+# -------------------------------
 class IntController:
     """
     Top-level controller that wires everything together.
@@ -574,12 +576,12 @@ class IntController:
         self.configurator = IntTableConfigurator()
 
     def configure_topology(self):
-        """Push INT configuration to all switches in topology"""
+        # Pushes INT configuration to all switches in topology
         logger.info("="*60)
         logger.info("Configuring INT topology...")
         logger.info("="*60)
 
-        # ---- Switch S1 : INT SOURCE ----
+        # -- Switch S1 : INT SOURCE --
         self.configurator.configure_forwarding("s1", [
             {"prefix": "10.0.2.0", "len": 24, "mac": "00:00:00:02:02:00", "port": 2},
             {"prefix": "10.0.3.0", "len": 24, "mac": "00:00:00:02:02:00", "port": 2},
@@ -596,7 +598,7 @@ class IntController:
         ])
         self.configurator.configure_transit("s2", sw_id_num=2)
 
-        # ---- Switch S3 : INT SINK ----
+        # -- Switch S3 : INT SINK --
         self.configurator.configure_forwarding("s3", [
             {"prefix": "10.0.3.2", "len": 32, "mac": "00:00:00:03:03:02", "port": 2},
             {"prefix": "10.0.1.0", "len": 24, "mac": "00:00:00:02:02:00", "port": 1},
@@ -605,7 +607,7 @@ class IntController:
         self.configurator.configure_sink("s3", egress_ports=[2], sw_id_num=3)
         # Port 2 exits INT domain (connects to h2)
 
-        # ---- Switch S4 : INT TRANSIT (alternate path) ----
+        # -- Switch S4 : INT TRANSIT (alternate path) --
         self.configurator.configure_forwarding("s4", [
             {"prefix": "10.0.3.0", "len": 24, "mac": "00:00:00:03:03:00", "port": 2},
             {"prefix": "10.0.1.0", "len": 24, "mac": "00:00:00:01:01:00", "port": 1},
@@ -617,12 +619,12 @@ class IntController:
         return config
 
     def start_collection(self):
-        """Start telemetry collection"""
+        # Start telemetry collection
         self.collector.start()
         logger.info("INT telemetry collection ACTIVE")
 
     def print_dashboard(self):
-        """Print live statistics dashboard"""
+        # Print live statistics dashboard
         stats = self.tracker.all_flow_stats()
         print("\n" + "="*70)
         print(f"  INT TELEMETRY DASHBOARD  [{datetime.now().strftime('%H:%M:%S')}]")
@@ -644,7 +646,7 @@ class IntController:
         print("="*70)
 
     def run(self):
-        """Main controller loop"""
+        # Main controller loop
         logger.info("Starting INT Controller")
         self.configure_topology()
         self.start_collection()
@@ -658,9 +660,9 @@ class IntController:
             self.collector.stop()
 
 
-# ---------------------------------------------------------------
+
 # Entry Point
-# ---------------------------------------------------------------
+# --------------
 if __name__ == "__main__":
     controller = IntController()
     controller.run()
