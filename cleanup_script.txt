@@ -1,20 +1,19 @@
-#!/bin/bash
-# 1. Kill any existing Mininet/BMv2 instances
-sudo mn -c
+1. Kill any existing Mininet/BMv2 instances
+    sudo mn -c
 
-# 2. Stop and Disable OVS completely
-sudo systemctl stop openvswitch-switch
-sudo systemctl stop openvswitch
-sudo systemctl disable openvswitch
+2. Stop and Disable OVS completely
+    sudo systemctl stop openvswitch-switch
+    sudo systemctl stop openvswitch
+    sudo systemctl disable openvswitch
 
-# 3. Remove OVS kernel modules (This is the "nuclear" option that works)
-sudo modprobe -r vport_geneve
-sudo modprobe -r vport_vxlan
-sudo modprobe -r openvswitch
+3. Remove OVS kernel modules (This is the "nuclear" option that works)
+    sudo modprobe -r vport_geneve
+    sudo modprobe -r vport_vxlan
+    sudo modprobe -r openvswitch
 
-# 4. Clean up any lingering virtual interfaces
-sudo ip link show | grep veth | awk '{print $2}' | cut -d'@' -f1 | xargs -I {} sudo ip link delete {}
+4. Clean up any lingering virtual interfaces
+    sudo ip link show | grep veth | awk '{print $2}' | cut -d'@' -f1 | xargs -I {} sudo ip link delete {}
 
-# 5. Flush IP tables (sometimes OVS leaves rules behind)
-sudo iptables -F
-sudo iptables -X
+5. Flush IP tables (sometimes OVS leaves rules behind)
+    sudo iptables -F
+    sudo iptables -X
