@@ -1,7 +1,5 @@
-#!/usr/bin/env python3
 """
 INT Traffic Generator
-=====================
 Uses Scapy to generate test traffic for the INT demo.
 Simulates:
   - Steady UDP flows (baseline latency measurement)
@@ -9,7 +7,7 @@ Simulates:
   - Multiple concurrent flows (tests ECMP path diversity)
   - TCP flows with SYN/ACK (tests TCP INT instrumentation)
 
-Usage:
+Usage cmnds:
   sudo python3 scripts/traffic_gen.py --mode steady --src 10.0.1.1 --dst 10.0.3.2
   sudo python3 scripts/traffic_gen.py --mode burst  --pps 10000
   sudo python3 scripts/traffic_gen.py --mode multi  --flows 5
@@ -35,9 +33,9 @@ except ImportError:
     sys.exit(1)
 
 
-# ---------------------------------------------------------------
+
 # Constants
-# ---------------------------------------------------------------
+# ----------------
 DEFAULT_IFACE   = "eth0"
 DEFAULT_SRC_IP  = "10.0.1.1"
 DEFAULT_DST_IP  = "10.0.3.2"
@@ -48,12 +46,12 @@ DEFAULT_DST_PORT = 5001
 INT_DSCP = 0x17
 
 
-# ---------------------------------------------------------------
+
 # Packet Builders
-# ---------------------------------------------------------------
+# --------------------
 def build_udp_pkt(src_ip, dst_ip, src_port, dst_port,
                   payload_size=64, iface=DEFAULT_IFACE):
-    """Build a UDP packet marked for INT instrumentation"""
+    # Built a UDP packet marked for INT instrumentation
     payload = bytes(random.randint(0, 255) for _ in range(payload_size))
     pkt = (
         Ether(src=get_if_hwaddr(iface), dst="ff:ff:ff:ff:ff:ff") /
@@ -66,7 +64,7 @@ def build_udp_pkt(src_ip, dst_ip, src_port, dst_port,
 
 def build_tcp_pkt(src_ip, dst_ip, src_port, dst_port,
                   flags="S", iface=DEFAULT_IFACE):
-    """Build a TCP SYN packet marked for INT"""
+    # Built a TCP SYN packet marked for INT
     pkt = (
         Ether(src=get_if_hwaddr(iface), dst="ff:ff:ff:ff:ff:ff") /
         IP(src=src_ip, dst=dst_ip, tos=INT_DSCP << 2) /
@@ -77,9 +75,9 @@ def build_tcp_pkt(src_ip, dst_ip, src_port, dst_port,
     return pkt
 
 
-# ---------------------------------------------------------------
+
 # Traffic Modes
-# ---------------------------------------------------------------
+# -------------------
 class TrafficGen:
     def __init__(self, args):
         self.src_ip   = args.src
@@ -90,7 +88,7 @@ class TrafficGen:
         self.running  = False
 
     def _send_rate_limited(self, pkts, pps):
-        """Send packets at a given packets-per-second rate"""
+        # Sends packets at a given packets-per-second rate
         interval = 1.0 / pps if pps > 0 else 0
         sent = 0
         start = time.time()
@@ -130,8 +128,8 @@ class TrafficGen:
 
     def mode_burst(self):
         """
-        Burst traffic to trigger queue congestion events.
-        INT will show queue_occupancy spikes in real-time.
+        Bursts traffic to trigger queue congestion events.
+        INT shows queue_occupancy spikes in real-time.
         """
         print(f"[BURST] Alternating: 5s quiet → 2s burst at {self.pps}pps")
         self.running = True
@@ -166,8 +164,8 @@ class TrafficGen:
 
     def mode_multi(self, num_flows=5):
         """
-        Multiple concurrent flows - tests ECMP path diversity.
-        Different flows may take S2 or S4 path; INT reveals which.
+        Multiple concurrent flows - tests ECMP path's diversity.
+        Different flows may take S2 or S4 path; INT reveals which path is taken.
         """
         print(f"[MULTI] {num_flows} concurrent flows for {self.duration}s")
         print("        Watch INT reports for path diversity (S2 vs S4 hops)")
@@ -201,7 +199,7 @@ class TrafficGen:
         print(f"[MULTI] Done.")
 
     def mode_tcp(self):
-        """TCP flow generation"""
+        # TCP flow generation
         print(f"[TCP] TCP SYN flood for latency measurement")
         end_time = time.time() + self.duration
         sent = 0
@@ -219,21 +217,23 @@ class TrafficGen:
         print(f"[TCP] Sent {sent} TCP packets")
 
 
-# ---------------------------------------------------------------
+
 # Main
-# ---------------------------------------------------------------
+# -------
 def main():
     parser = argparse.ArgumentParser(
         description="INT Traffic Generator",
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Examples:
-  sudo python3 scripts/traffic_gen.py --mode steady
-  sudo python3 scripts/traffic_gen.py --mode burst  --pps 5000
-  sudo python3 scripts/traffic_gen.py --mode multi  --flows 8
-  sudo python3 scripts/traffic_gen.py --mode tcp
+        epilog=
         """
-    )
+        Examples:
+        sudo python3 scripts/traffic_gen.py --mode steady
+        sudo python3 scripts/traffic_gen.py --mode burst  --pps 5000
+        sudo python3 scripts/traffic_gen.py --mode multi  --flows 8
+        sudo python3 scripts/traffic_gen.py --mode tcp
+        """
+        )
+
     parser.add_argument("--mode",     default="steady",
                         choices=["steady", "burst", "multi", "tcp"],
                         help="Traffic generation mode")
