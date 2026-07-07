@@ -1,4 +1,4 @@
-"""
+/*
   In-band Network Telemetry (INT) - P4_16 Implementation
   Target: BMv2 simple_switch
 
@@ -16,7 +16,7 @@
     [6] Egress Timestamp
     [7] Queue Congestion Status
     [8] Egress Port TX Utilization
- """
+*/
 
 #include <core.p4>
 #include <v1model.p4>
@@ -247,7 +247,7 @@ struct int_metadata_t {
 }
 
 struct metadata_t {
-    int_metadata_t   int_meta;
+    @field_list(1) int_metadata_t   int_meta;
     bit<16>          l4_src_port;
     bit<16>          l4_dst_port;
     bit<9>           ingress_port;
@@ -262,12 +262,12 @@ struct metadata_t {
     /* Telemetry-report fields. These are part of the same struct that
      * gets passed whole to clone3(), so whatever is written here during
      * ingress is exactly what the cloned report packet will see. */
-    bit<48>          report_switch_mac;
-    bit<32>          report_switch_ip;
-    bit<48>          report_collector_mac;
-    bit<32>          report_collector_ip;
-    bit<16>          report_collector_port;
-    bit<32>          report_seq_no;
+    @field_list(1) bit<48>          report_switch_mac;
+    @field_list(1) bit<32>          report_switch_ip;
+    @field_list(1) bit<48>          report_collector_mac;
+    @field_list(1) bit<32>          report_collector_ip;
+    @field_list(1) bit<16>          report_collector_port;
+    @field_list(1) bit<32>          report_seq_no;
 }
 
 
@@ -605,7 +605,7 @@ control IntIngress(
                     int_report_config.apply();
                     report_seq_reg.read(meta.report_seq_no, 0);
                     report_seq_reg.write(0, meta.report_seq_no + 1);
-                    clone3(CloneType.I2E, REPORT_MIRROR_SESSION, meta);
+                    clone_preserving_field_list(CloneType.I2E, REPORT_MIRROR_SESSION, 1);
                 }
             } else {
                 /* Check if this flow should have INT initiated */
@@ -636,7 +636,7 @@ control IntEgress(
     /* Insert the INT shim + INT header into the packet */
     action int_source_add_shim() {
         hdr.int_shim.setValid();
-        hdr.int_shim.int_type  = INT_TYPE_HOP_BY_HOP;
+        hdr.int_shim.int_type  = (bit<8>) 1;
         hdr.int_shim.length    = 0;  /* updated after metadata insertion */
         hdr.int_shim.orig_dscp = hdr.ipv4.diffserv >> 2;
 
@@ -741,6 +741,9 @@ control IntEgress(
          * off before overwriting it with PROTO_INT_SHIM. Must happen
          * before int_tail is invalidated below. */
         hdr.ipv4.protocol = hdr.int_tail.next_proto;
+        /* Subtract INT overhead from total_len: shim(4) + header(8) + tail(4) */
+        /* plus all per-hop metadata: shim.length tracks word count, convert to bytes */
+        hdr.ipv4.total_len = hdr.ipv4.total_len - INT_FIXED_OVERHEAD_BYTES - ((bit<16>)hdr.int_shim.length << 2);
 
         /* Invalidate all INT header stacks */
         hdr.int_shim.setInvalid();
@@ -811,63 +814,7 @@ control IntEgress(
         meta.egress_tstamp = smeta.egress_global_timestamp;
 
         if (smeta.instance_type == PKT_INSTANCE_TYPE_INGRESS_CLONE) {
-            /* This is the cloned copy created by clone3(I2E, ...) in
-             * IntIngress, on its way to the collector. hdr still holds
-             * the packet exactly as it looked on arrival at the sink
-             * (full INT stack, untouched) - we do NOT want to run any
-             * of the normal source/transit/sink logic again on it
-             * (that would double-add metadata and, since meta.int_meta
-             * .sink is also preserved as 1, would re-request another
-             * clone of this clone). Instead, just wrap it in the
-             * outer report headers built entirely from the metadata
-             * fields preserved by clone3 - never from hdr, since hdr's
-             * validity bits were captured before this switch did
-             * anything, and the report config table only runs in
-             * ingress.
-             */
-            hdr.report_eth.setValid();
-            hdr.report_eth.dst_addr   = meta.report_collector_mac;
-            hdr.report_eth.src_addr   = meta.report_switch_mac;
-            hdr.report_eth.ether_type = TYPE_IPV4;
-
-            hdr.report_ipv4.setValid();
-            hdr.report_ipv4.version        = 4;
-            hdr.report_ipv4.ihl            = 5;
-            hdr.report_ipv4.diffserv       = 0;
-            hdr.report_ipv4.identification = 0;
-            hdr.report_ipv4.flags          = 0;
-            hdr.report_ipv4.frag_offset    = 0;
-            hdr.report_ipv4.ttl            = 64;
-            hdr.report_ipv4.protocol       = PROTO_UDP;
-            hdr.report_ipv4.src_addr       = meta.report_switch_ip;
-            hdr.report_ipv4.dst_addr       = meta.report_collector_ip;
-            hdr.report_ipv4.hdr_checksum   = 0; /* recomputed by IntComputeChecksum */
-            /* outer IP hdr(20) + outer UDP hdr(8) + report headers(13)
-             * + inner ethernet(14) + inner IP packet (already includes
-             * the INT overhead) */
-            hdr.report_ipv4.total_len      = 20 + 8 + 9 + 4 + 14 + hdr.ipv4.total_len;
-
-            hdr.report_udp.setValid();
-            hdr.report_udp.src_port = 9999;
-            hdr.report_udp.dst_port = meta.report_collector_port;
-            hdr.report_udp.length   = 8 + 9 + 4 + 14 + hdr.ipv4.total_len;
-            hdr.report_udp.checksum = 0; /* optional for IPv4; left unset */
-
-            hdr.report_group_hdr.setValid();
-            hdr.report_group_hdr.ver     = 0;
-            hdr.report_group_hdr.hw_id   = 0;
-            hdr.report_group_hdr.seq_no  = meta.report_seq_no;
-            hdr.report_group_hdr.node_id = meta.int_meta.switch_id;
-
-            hdr.report_individual_hdr.setValid();
-            hdr.report_individual_hdr.rep_type          = 0;
-            hdr.report_individual_hdr.in_type            = INT_TYPE_HOP_BY_HOP;
-            hdr.report_individual_hdr.dropped             = 0;
-            hdr.report_individual_hdr.congested_queue     = 0;
-            hdr.report_individual_hdr.path_tracking_flow  = 0;
-            hdr.report_individual_hdr.rsvd                = 0;
-            hdr.report_individual_hdr.hw_id               = (bit<16>) meta.int_meta.switch_id;
-
+            /* Raw INT packet forwarded directly to collector - no outer encapsulation */
         } else {
             /* === Normal (non-clone) packet processing === */
 
