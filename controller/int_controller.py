@@ -30,7 +30,7 @@ logger = logging.getLogger("INT-Controller")
 # --------------
 COLLECTOR_HOST = "0.0.0.0"
 COLLECTOR_PORT = 54321
-COLLECTOR_IFACE = "col-eth0"  # matches int_topology.py's addNodeIntfData() name
+COLLECTOR_IFACE = "collector-eth0"  # matches int_topology.py's addNodeIntfData() name
 BUFFER_SIZE    = 65535
 
 # INT Instruction Bitmap
@@ -154,8 +154,7 @@ class IntReportDecoder:
         | INT Shim | INT Header | [Hop Metadta × N] (hop-major)
         """
         try:
-            offset = (self.OUTER_ETH_HDR_LEN + self.OUTER_IPV4_HDR_LEN
-                      + self.OUTER_UDP_HDR_LEN)
+            offset = self.OUTER_ETH_HDR_LEN  # raw INT packet: just skip Ethernet
 
             if len(raw_packet) < offset + self.REPORT_GROUP_HDR_LEN + self.REPORT_INDIVIDUAL_HDR_LEN:
                 return None
@@ -427,8 +426,8 @@ class IntCollector:
             return False
         if data[14 + 9] != 17:                  # not UDP
             return False
-        dst_port = struct.unpack("!H", data[14 + 20 + 2:14 + 20 + 4])[0]
-        return dst_port == self.port
+        
+        return True
 
     def _recv_loop(self):
         while self._running:
