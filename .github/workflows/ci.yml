@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+jobs:
+  bash:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Syntax check
+        run: |
+          find . -name "*.sh" -not -path "./.git/*" -print0 | xargs -0 -r -n1 bash -n
+          [ -f PKGBUILD ] && bash -n PKGBUILD || true
+      - name: ShellCheck
+        run: |
+          find . -name "*.sh" -not -path "./.git/*" -print0 | xargs -0 -r shellcheck
+          [ -f PKGBUILD ] && shellcheck --shell=bash --exclude=SC2034,SC2154 PKGBUILD || true
+
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Lint (errors only)
+        run: |
+          pip install ruff
+          ruff check --select E9,F63,F7,F82 --exclude .venv .
+      - name: Tests
+        run: |
+          pip install pytest
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if find . -path ./.venv -prune -o -name "test_*.py" -print | grep -q .; then pytest; else echo "No tests yet"; fi
+
+  p4:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile P4 programs
+        run: |
+          for f in $(find . -name "*.p4" -not -path "./.git/*"); do
+            echo "Compiling $f"
+            docker run --rm -v "$PWD":/w -w /w p4lang/p4c \
+              p4c-bm2-ss --std p4-16 -o /tmp/out "$f"
+          done
