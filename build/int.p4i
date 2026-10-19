@@ -1,0 +1,6261 @@
+# 0 "/root/int_p4_project/build/int.json"
+# 0 "<built-in>"
+# 0 "<command-line>"
+# 1 "/root/int_p4_project/build/int.json"
+{
+  "header_types" : [
+    {
+      "name" : "scalars_0",
+      "id" : 0,
+      "fields" : [
+        ["tmp", 16, false],
+        ["tmp_0", 16, false],
+        ["tmp_1", 16, false],
+        ["tmp_2", 16, false],
+        ["tmp_3", 16, false],
+        ["tmp_4", 16, false],
+        ["tmp_5", 32, false],
+        ["tmp_6", 32, false],
+        ["tmp_7", 32, false],
+        ["metadata_t._int_meta_source0", 1, false],
+        ["metadata_t._int_meta_sink1", 1, false],
+        ["metadata_t._int_meta_transit2", 1, false],
+        ["metadata_t._int_meta_switch_id3", 32, false],
+        ["metadata_t._int_meta_insert_byte_cnt4", 16, false],
+        ["metadata_t._int_meta_int_hdr_word_len5", 8, false],
+        ["metadata_t._int_meta_hop_latency6", 32, false],
+        ["metadata_t._int_meta_flow_id7", 16, false],
+        ["metadata_t._l4_src_port8", 16, false],
+        ["metadata_t._l4_dst_port9", 16, false],
+        ["metadata_t._ingress_port10", 9, false],
+        ["metadata_t._egress_port11", 9, false],
+        ["metadata_t._ingress_tstamp12", 48, false],
+        ["metadata_t._egress_tstamp13", 48, false],
+        ["metadata_t._parse_words_left14", 16, false],
+        ["metadata_t._report_switch_mac15", 48, false],
+        ["metadata_t._report_switch_ip16", 32, false],
+        ["metadata_t._report_collector_mac17", 48, false],
+        ["metadata_t._report_collector_ip18", 32, false],
+        ["metadata_t._report_collector_port19", 16, false],
+        ["metadata_t._report_seq_no20", 32, false],
+        ["_padding_0", 3, false]
+      ]
+    },
+    {
+      "name" : "standard_metadata",
+      "id" : 1,
+      "fields" : [
+        ["ingress_port", 9, false],
+        ["egress_spec", 9, false],
+        ["egress_port", 9, false],
+        ["instance_type", 32, false],
+        ["packet_length", 32, false],
+        ["enq_timestamp", 32, false],
+        ["enq_qdepth", 19, false],
+        ["deq_timedelta", 32, false],
+        ["deq_qdepth", 19, false],
+        ["ingress_global_timestamp", 48, false],
+        ["egress_global_timestamp", 48, false],
+        ["mcast_grp", 16, false],
+        ["egress_rid", 16, false],
+        ["checksum_error", 1, false],
+        ["parser_error", 32, false],
+        ["priority", 3, false],
+        ["_padding", 3, false]
+      ]
+    },
+    {
+      "name" : "ethernet_t",
+      "id" : 2,
+      "fields" : [
+        ["dst_addr", 48, false],
+        ["src_addr", 48, false],
+        ["ether_type", 16, false]
+      ]
+    },
+    {
+      "name" : "ipv4_t",
+      "id" : 3,
+      "fields" : [
+        ["version", 4, false],
+        ["ihl", 4, false],
+        ["diffserv", 8, false],
+        ["total_len", 16, false],
+        ["identification", 16, false],
+        ["flags", 3, false],
+        ["frag_offset", 13, false],
+        ["ttl", 8, false],
+        ["protocol", 8, false],
+        ["hdr_checksum", 16, false],
+        ["src_addr", 32, false],
+        ["dst_addr", 32, false]
+      ]
+    },
+    {
+      "name" : "udp_t",
+      "id" : 4,
+      "fields" : [
+        ["src_port", 16, false],
+        ["dst_port", 16, false],
+        ["length", 16, false],
+        ["checksum", 16, false]
+      ]
+    },
+    {
+      "name" : "report_group_header_t",
+      "id" : 5,
+      "fields" : [
+        ["ver", 4, false],
+        ["hw_id", 4, false],
+        ["seq_no", 32, false],
+        ["node_id", 32, false]
+      ]
+    },
+    {
+      "name" : "report_individual_header_t",
+      "id" : 6,
+      "fields" : [
+        ["rep_type", 4, false],
+        ["in_type", 4, false],
+        ["dropped", 1, false],
+        ["congested_queue", 1, false],
+        ["path_tracking_flow", 1, false],
+        ["rsvd", 5, false],
+        ["hw_id", 16, false]
+      ]
+    },
+    {
+      "name" : "tcp_t",
+      "id" : 7,
+      "fields" : [
+        ["src_port", 16, false],
+        ["dst_port", 16, false],
+        ["seq_no", 32, false],
+        ["ack_no", 32, false],
+        ["data_offset", 4, false],
+        ["res", 3, false],
+        ["ecn", 3, false],
+        ["ctrl", 6, false],
+        ["window", 16, false],
+        ["checksum", 16, false],
+        ["urgent_ptr", 16, false]
+      ]
+    },
+    {
+      "name" : "int_shim_t",
+      "id" : 8,
+      "fields" : [
+        ["int_type", 8, false],
+        ["rsvd1", 8, false],
+        ["length", 8, false],
+        ["orig_dscp", 8, false]
+      ]
+    },
+    {
+      "name" : "int_header_t",
+      "id" : 9,
+      "fields" : [
+        ["ver", 4, false],
+        ["rep", 2, false],
+        ["c_bit", 1, false],
+        ["e_bit", 1, false],
+        ["m_bit", 1, false],
+        ["rsvd1", 7, false],
+        ["rsvd2", 3, false],
+        ["hop_metadata_len", 5, false],
+        ["remaining_hop_cnt", 8, false],
+        ["instruction_mask", 16, false],
+        ["rsvd3", 16, false]
+      ]
+    },
+    {
+      "name" : "int_tail_t",
+      "id" : 10,
+      "fields" : [
+        ["next_proto", 8, false],
+        ["dest_port", 16, false],
+        ["dscp", 8, false]
+      ]
+    },
+    {
+      "name" : "int_switch_id_t",
+      "id" : 11,
+      "fields" : [
+        ["switch_id", 32, false]
+      ]
+    },
+    {
+      "name" : "int_port_ids_t",
+      "id" : 12,
+      "fields" : [
+        ["ingress_port_id", 16, false],
+        ["egress_port_id", 16, false]
+      ]
+    },
+    {
+      "name" : "int_hop_latency_t",
+      "id" : 13,
+      "fields" : [
+        ["hop_latency", 32, false]
+      ]
+    },
+    {
+      "name" : "int_q_occupancy_t",
+      "id" : 14,
+      "fields" : [
+        ["q_id", 8, false],
+        ["q_occupancy", 24, false]
+      ]
+    },
+    {
+      "name" : "int_ingress_tstamp_t",
+      "id" : 15,
+      "fields" : [
+        ["ingress_tstamp", 64, false]
+      ]
+    },
+    {
+      "name" : "int_egress_tstamp_t",
+      "id" : 16,
+      "fields" : [
+        ["egress_tstamp", 64, false]
+      ]
+    },
+    {
+      "name" : "int_q_congestion_t",
+      "id" : 17,
+      "fields" : [
+        ["q_id", 8, false],
+        ["q_congestion", 24, false]
+      ]
+    },
+    {
+      "name" : "int_egress_tx_util_t",
+      "id" : 18,
+      "fields" : [
+        ["egress_tx_util", 32, false]
+      ]
+    }
+  ],
+  "headers" : [
+    {
+      "name" : "scalars",
+      "id" : 0,
+      "header_type" : "scalars_0",
+      "metadata" : true,
+      "pi_omit" : true
+    },
+    {
+      "name" : "standard_metadata",
+      "id" : 1,
+      "header_type" : "standard_metadata",
+      "metadata" : true,
+      "pi_omit" : true
+    },
+    {
+      "name" : "report_eth",
+      "id" : 2,
+      "header_type" : "ethernet_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "report_ipv4",
+      "id" : 3,
+      "header_type" : "ipv4_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "report_udp",
+      "id" : 4,
+      "header_type" : "udp_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "report_group_hdr",
+      "id" : 5,
+      "header_type" : "report_group_header_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "report_individual_hdr",
+      "id" : 6,
+      "header_type" : "report_individual_header_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "ethernet",
+      "id" : 7,
+      "header_type" : "ethernet_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "ipv4",
+      "id" : 8,
+      "header_type" : "ipv4_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "tcp",
+      "id" : 9,
+      "header_type" : "tcp_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "udp",
+      "id" : 10,
+      "header_type" : "udp_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_shim",
+      "id" : 11,
+      "header_type" : "int_shim_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_header",
+      "id" : 12,
+      "header_type" : "int_header_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_tail",
+      "id" : 13,
+      "header_type" : "int_tail_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_switch_id[0]",
+      "id" : 14,
+      "header_type" : "int_switch_id_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_switch_id[1]",
+      "id" : 15,
+      "header_type" : "int_switch_id_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_switch_id[2]",
+      "id" : 16,
+      "header_type" : "int_switch_id_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_switch_id[3]",
+      "id" : 17,
+      "header_type" : "int_switch_id_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_switch_id[4]",
+      "id" : 18,
+      "header_type" : "int_switch_id_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_switch_id[5]",
+      "id" : 19,
+      "header_type" : "int_switch_id_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_port_ids[0]",
+      "id" : 20,
+      "header_type" : "int_port_ids_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_port_ids[1]",
+      "id" : 21,
+      "header_type" : "int_port_ids_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_port_ids[2]",
+      "id" : 22,
+      "header_type" : "int_port_ids_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_port_ids[3]",
+      "id" : 23,
+      "header_type" : "int_port_ids_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_port_ids[4]",
+      "id" : 24,
+      "header_type" : "int_port_ids_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_port_ids[5]",
+      "id" : 25,
+      "header_type" : "int_port_ids_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_hop_latency[0]",
+      "id" : 26,
+      "header_type" : "int_hop_latency_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_hop_latency[1]",
+      "id" : 27,
+      "header_type" : "int_hop_latency_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_hop_latency[2]",
+      "id" : 28,
+      "header_type" : "int_hop_latency_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_hop_latency[3]",
+      "id" : 29,
+      "header_type" : "int_hop_latency_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_hop_latency[4]",
+      "id" : 30,
+      "header_type" : "int_hop_latency_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_hop_latency[5]",
+      "id" : 31,
+      "header_type" : "int_hop_latency_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_q_occupancy[0]",
+      "id" : 32,
+      "header_type" : "int_q_occupancy_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_q_occupancy[1]",
+      "id" : 33,
+      "header_type" : "int_q_occupancy_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_q_occupancy[2]",
+      "id" : 34,
+      "header_type" : "int_q_occupancy_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_q_occupancy[3]",
+      "id" : 35,
+      "header_type" : "int_q_occupancy_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_q_occupancy[4]",
+      "id" : 36,
+      "header_type" : "int_q_occupancy_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_q_occupancy[5]",
+      "id" : 37,
+      "header_type" : "int_q_occupancy_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_ingress_tstamp[0]",
+      "id" : 38,
+      "header_type" : "int_ingress_tstamp_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_ingress_tstamp[1]",
+      "id" : 39,
+      "header_type" : "int_ingress_tstamp_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_ingress_tstamp[2]",
+      "id" : 40,
+      "header_type" : "int_ingress_tstamp_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_ingress_tstamp[3]",
+      "id" : 41,
+      "header_type" : "int_ingress_tstamp_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_ingress_tstamp[4]",
+      "id" : 42,
+      "header_type" : "int_ingress_tstamp_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_ingress_tstamp[5]",
+      "id" : 43,
+      "header_type" : "int_ingress_tstamp_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_egress_tstamp[0]",
+      "id" : 44,
+      "header_type" : "int_egress_tstamp_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_egress_tstamp[1]",
+      "id" : 45,
+      "header_type" : "int_egress_tstamp_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_egress_tstamp[2]",
+      "id" : 46,
+      "header_type" : "int_egress_tstamp_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_egress_tstamp[3]",
+      "id" : 47,
+      "header_type" : "int_egress_tstamp_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_egress_tstamp[4]",
+      "id" : 48,
+      "header_type" : "int_egress_tstamp_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_egress_tstamp[5]",
+      "id" : 49,
+      "header_type" : "int_egress_tstamp_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_q_congestion[0]",
+      "id" : 50,
+      "header_type" : "int_q_congestion_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_q_congestion[1]",
+      "id" : 51,
+      "header_type" : "int_q_congestion_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_q_congestion[2]",
+      "id" : 52,
+      "header_type" : "int_q_congestion_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_q_congestion[3]",
+      "id" : 53,
+      "header_type" : "int_q_congestion_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_q_congestion[4]",
+      "id" : 54,
+      "header_type" : "int_q_congestion_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_q_congestion[5]",
+      "id" : 55,
+      "header_type" : "int_q_congestion_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_egress_tx_util[0]",
+      "id" : 56,
+      "header_type" : "int_egress_tx_util_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_egress_tx_util[1]",
+      "id" : 57,
+      "header_type" : "int_egress_tx_util_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_egress_tx_util[2]",
+      "id" : 58,
+      "header_type" : "int_egress_tx_util_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_egress_tx_util[3]",
+      "id" : 59,
+      "header_type" : "int_egress_tx_util_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_egress_tx_util[4]",
+      "id" : 60,
+      "header_type" : "int_egress_tx_util_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "int_egress_tx_util[5]",
+      "id" : 61,
+      "header_type" : "int_egress_tx_util_t",
+      "metadata" : false,
+      "pi_omit" : true
+    }
+  ],
+  "header_stacks" : [
+    {
+      "name" : "int_switch_id",
+      "id" : 0,
+      "header_type" : "int_switch_id_t",
+      "size" : 6,
+      "header_ids" : [14, 15, 16, 17, 18, 19]
+    },
+    {
+      "name" : "int_port_ids",
+      "id" : 1,
+      "header_type" : "int_port_ids_t",
+      "size" : 6,
+      "header_ids" : [20, 21, 22, 23, 24, 25]
+    },
+    {
+      "name" : "int_hop_latency",
+      "id" : 2,
+      "header_type" : "int_hop_latency_t",
+      "size" : 6,
+      "header_ids" : [26, 27, 28, 29, 30, 31]
+    },
+    {
+      "name" : "int_q_occupancy",
+      "id" : 3,
+      "header_type" : "int_q_occupancy_t",
+      "size" : 6,
+      "header_ids" : [32, 33, 34, 35, 36, 37]
+    },
+    {
+      "name" : "int_ingress_tstamp",
+      "id" : 4,
+      "header_type" : "int_ingress_tstamp_t",
+      "size" : 6,
+      "header_ids" : [38, 39, 40, 41, 42, 43]
+    },
+    {
+      "name" : "int_egress_tstamp",
+      "id" : 5,
+      "header_type" : "int_egress_tstamp_t",
+      "size" : 6,
+      "header_ids" : [44, 45, 46, 47, 48, 49]
+    },
+    {
+      "name" : "int_q_congestion",
+      "id" : 6,
+      "header_type" : "int_q_congestion_t",
+      "size" : 6,
+      "header_ids" : [50, 51, 52, 53, 54, 55]
+    },
+    {
+      "name" : "int_egress_tx_util",
+      "id" : 7,
+      "header_type" : "int_egress_tx_util_t",
+      "size" : 6,
+      "header_ids" : [56, 57, 58, 59, 60, 61]
+    }
+  ],
+  "header_union_types" : [],
+  "header_unions" : [],
+  "header_union_stacks" : [],
+  "field_lists" : [
+    {
+      "id" : 1,
+      "name" : "field_list1",
+      "elements" : [
+        {
+          "type" : "field",
+          "value" : ["scalars", "metadata_t._int_meta_source0"]
+        },
+        {
+          "type" : "field",
+          "value" : ["scalars", "metadata_t._int_meta_sink1"]
+        },
+        {
+          "type" : "field",
+          "value" : ["scalars", "metadata_t._int_meta_transit2"]
+        },
+        {
+          "type" : "field",
+          "value" : ["scalars", "metadata_t._int_meta_switch_id3"]
+        },
+        {
+          "type" : "field",
+          "value" : ["scalars", "metadata_t._int_meta_insert_byte_cnt4"]
+        },
+        {
+          "type" : "field",
+          "value" : ["scalars", "metadata_t._int_meta_int_hdr_word_len5"]
+        },
+        {
+          "type" : "field",
+          "value" : ["scalars", "metadata_t._int_meta_hop_latency6"]
+        },
+        {
+          "type" : "field",
+          "value" : ["scalars", "metadata_t._int_meta_flow_id7"]
+        },
+        {
+          "type" : "field",
+          "value" : ["scalars", "metadata_t._report_switch_mac15"]
+        },
+        {
+          "type" : "field",
+          "value" : ["scalars", "metadata_t._report_switch_ip16"]
+        },
+        {
+          "type" : "field",
+          "value" : ["scalars", "metadata_t._report_collector_mac17"]
+        },
+        {
+          "type" : "field",
+          "value" : ["scalars", "metadata_t._report_collector_ip18"]
+        },
+        {
+          "type" : "field",
+          "value" : ["scalars", "metadata_t._report_collector_port19"]
+        },
+        {
+          "type" : "field",
+          "value" : ["scalars", "metadata_t._report_seq_no20"]
+        }
+      ]
+    }
+  ],
+  "errors" : [
+    ["NoError", 0],
+    ["PacketTooShort", 1],
+    ["NoMatch", 2],
+    ["StackOutOfBounds", 3],
+    ["HeaderTooShort", 4],
+    ["ParserTimeout", 5],
+    ["ParserInvalidArgument", 6]
+  ],
+  "enums" : [],
+  "parsers" : [
+    {
+      "name" : "parser",
+      "id" : 0,
+      "init_state" : "start",
+      "parse_states" : [
+        {
+          "name" : "start",
+          "id" : 0,
+          "parser_ops" : [
+            {
+              "parameters" : [
+                {
+                  "type" : "regular",
+                  "value" : "ethernet"
+                }
+              ],
+              "op" : "extract"
+            }
+          ],
+          "transitions" : [
+            {
+              "type" : "hexstr",
+              "value" : "0x0800",
+              "mask" : null,
+              "next_state" : "parse_ipv4"
+            },
+            {
+              "type" : "default",
+              "value" : null,
+              "mask" : null,
+              "next_state" : null
+            }
+          ],
+          "transition_key" : [
+            {
+              "type" : "field",
+              "value" : ["ethernet", "ether_type"]
+            }
+          ]
+        },
+        {
+          "name" : "parse_ipv4",
+          "id" : 1,
+          "parser_ops" : [
+            {
+              "parameters" : [
+                {
+                  "type" : "regular",
+                  "value" : "ipv4"
+                }
+              ],
+              "op" : "extract"
+            },
+            {
+              "parameters" : [
+                {
+                  "type" : "field",
+                  "value" : ["scalars", "metadata_t._ingress_tstamp12"]
+                },
+                {
+                  "type" : "field",
+                  "value" : ["standard_metadata", "ingress_global_timestamp"]
+                }
+              ],
+              "op" : "set"
+            }
+          ],
+          "transitions" : [
+            {
+              "type" : "hexstr",
+              "value" : "0x06",
+              "mask" : null,
+              "next_state" : "parse_tcp"
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x11",
+              "mask" : null,
+              "next_state" : "parse_udp"
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0xfd",
+              "mask" : null,
+              "next_state" : "parse_int_shim"
+            },
+            {
+              "type" : "default",
+              "value" : null,
+              "mask" : null,
+              "next_state" : null
+            }
+          ],
+          "transition_key" : [
+            {
+              "type" : "field",
+              "value" : ["ipv4", "protocol"]
+            }
+          ]
+        },
+        {
+          "name" : "parse_tcp",
+          "id" : 2,
+          "parser_ops" : [
+            {
+              "parameters" : [
+                {
+                  "type" : "regular",
+                  "value" : "tcp"
+                }
+              ],
+              "op" : "extract"
+            },
+            {
+              "parameters" : [
+                {
+                  "type" : "field",
+                  "value" : ["scalars", "metadata_t._l4_src_port8"]
+                },
+                {
+                  "type" : "field",
+                  "value" : ["tcp", "src_port"]
+                }
+              ],
+              "op" : "set"
+            },
+            {
+              "parameters" : [
+                {
+                  "type" : "field",
+                  "value" : ["scalars", "metadata_t._l4_dst_port9"]
+                },
+                {
+                  "type" : "field",
+                  "value" : ["tcp", "dst_port"]
+                }
+              ],
+              "op" : "set"
+            }
+          ],
+          "transitions" : [
+            {
+              "type" : "default",
+              "value" : null,
+              "mask" : null,
+              "next_state" : null
+            }
+          ],
+          "transition_key" : [
+            {
+              "type" : "field",
+              "value" : ["ipv4", "diffserv"]
+            }
+          ]
+        },
+        {
+          "name" : "parse_udp",
+          "id" : 3,
+          "parser_ops" : [
+            {
+              "parameters" : [
+                {
+                  "type" : "regular",
+                  "value" : "udp"
+                }
+              ],
+              "op" : "extract"
+            },
+            {
+              "parameters" : [
+                {
+                  "type" : "field",
+                  "value" : ["scalars", "metadata_t._l4_src_port8"]
+                },
+                {
+                  "type" : "field",
+                  "value" : ["udp", "src_port"]
+                }
+              ],
+              "op" : "set"
+            },
+            {
+              "parameters" : [
+                {
+                  "type" : "field",
+                  "value" : ["scalars", "metadata_t._l4_dst_port9"]
+                },
+                {
+                  "type" : "field",
+                  "value" : ["udp", "dst_port"]
+                }
+              ],
+              "op" : "set"
+            }
+          ],
+          "transitions" : [
+            {
+              "type" : "default",
+              "value" : null,
+              "mask" : null,
+              "next_state" : null
+            }
+          ],
+          "transition_key" : [
+            {
+              "type" : "field",
+              "value" : ["ipv4", "diffserv"]
+            }
+          ]
+        },
+        {
+          "name" : "parse_int_shim",
+          "id" : 4,
+          "parser_ops" : [
+            {
+              "parameters" : [
+                {
+                  "type" : "regular",
+                  "value" : "int_shim"
+                }
+              ],
+              "op" : "extract"
+            },
+            {
+              "parameters" : [
+                {
+                  "type" : "regular",
+                  "value" : "int_header"
+                }
+              ],
+              "op" : "extract"
+            },
+            {
+              "parameters" : [
+                {
+                  "type" : "field",
+                  "value" : ["scalars", "metadata_t._parse_words_left14"]
+                },
+                {
+                  "type" : "expression",
+                  "value" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "&",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["int_shim", "length"]
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0xffff"
+                      }
+                    }
+                  }
+                }
+              ],
+              "op" : "set"
+            }
+          ],
+          "transitions" : [
+            {
+              "type" : "default",
+              "value" : null,
+              "mask" : null,
+              "next_state" : "parse_int_hop"
+            }
+          ],
+          "transition_key" : []
+        },
+        {
+          "name" : "parse_int_hop",
+          "id" : 5,
+          "parser_ops" : [],
+          "transitions" : [
+            {
+              "type" : "hexstr",
+              "value" : "0x0000",
+              "mask" : null,
+              "next_state" : "parse_int_tail"
+            },
+            {
+              "type" : "default",
+              "value" : null,
+              "mask" : null,
+              "next_state" : "parse_int_hop_switch_id"
+            }
+          ],
+          "transition_key" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata_t._parse_words_left14"]
+            }
+          ]
+        },
+        {
+          "name" : "parse_int_hop_switch_id",
+          "id" : 6,
+          "parser_ops" : [
+            {
+              "parameters" : [
+                {
+                  "type" : "field",
+                  "value" : ["scalars", "tmp"]
+                },
+                {
+                  "type" : "expression",
+                  "value" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "&",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["int_header", "instruction_mask"]
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0x8000"
+                      }
+                    }
+                  }
+                }
+              ],
+              "op" : "set"
+            }
+          ],
+          "transitions" : [
+            {
+              "type" : "hexstr",
+              "value" : "0x0000",
+              "mask" : null,
+              "next_state" : "parse_int_hop_port_ids"
+            },
+            {
+              "type" : "default",
+              "value" : null,
+              "mask" : null,
+              "next_state" : "parse_int_hop_switch_id_extract"
+            }
+          ],
+          "transition_key" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp"]
+            }
+          ]
+        },
+        {
+          "name" : "parse_int_hop_switch_id_extract",
+          "id" : 7,
+          "parser_ops" : [
+            {
+              "parameters" : [
+                {
+                  "type" : "stack",
+                  "value" : "int_switch_id"
+                }
+              ],
+              "op" : "extract"
+            },
+            {
+              "parameters" : [
+                {
+                  "type" : "field",
+                  "value" : ["scalars", "metadata_t._parse_words_left14"]
+                },
+                {
+                  "type" : "expression",
+                  "value" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "&",
+                      "left" : {
+                        "type" : "expression",
+                        "value" : {
+                          "op" : "+",
+                          "left" : {
+                            "type" : "field",
+                            "value" : ["scalars", "metadata_t._parse_words_left14"]
+                          },
+                          "right" : {
+                            "type" : "hexstr",
+                            "value" : "0xffff"
+                          }
+                        }
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0xffff"
+                      }
+                    }
+                  }
+                }
+              ],
+              "op" : "set"
+            }
+          ],
+          "transitions" : [
+            {
+              "type" : "default",
+              "value" : null,
+              "mask" : null,
+              "next_state" : "parse_int_hop_port_ids"
+            }
+          ],
+          "transition_key" : []
+        },
+        {
+          "name" : "parse_int_hop_port_ids",
+          "id" : 8,
+          "parser_ops" : [
+            {
+              "parameters" : [
+                {
+                  "type" : "field",
+                  "value" : ["scalars", "tmp_0"]
+                },
+                {
+                  "type" : "expression",
+                  "value" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "&",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["int_header", "instruction_mask"]
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0x4000"
+                      }
+                    }
+                  }
+                }
+              ],
+              "op" : "set"
+            }
+          ],
+          "transitions" : [
+            {
+              "type" : "hexstr",
+              "value" : "0x0000",
+              "mask" : null,
+              "next_state" : "parse_int_hop_hop_latency"
+            },
+            {
+              "type" : "default",
+              "value" : null,
+              "mask" : null,
+              "next_state" : "parse_int_hop_port_ids_extract"
+            }
+          ],
+          "transition_key" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp_0"]
+            }
+          ]
+        },
+        {
+          "name" : "parse_int_hop_port_ids_extract",
+          "id" : 9,
+          "parser_ops" : [
+            {
+              "parameters" : [
+                {
+                  "type" : "stack",
+                  "value" : "int_port_ids"
+                }
+              ],
+              "op" : "extract"
+            },
+            {
+              "parameters" : [
+                {
+                  "type" : "field",
+                  "value" : ["scalars", "metadata_t._parse_words_left14"]
+                },
+                {
+                  "type" : "expression",
+                  "value" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "&",
+                      "left" : {
+                        "type" : "expression",
+                        "value" : {
+                          "op" : "+",
+                          "left" : {
+                            "type" : "field",
+                            "value" : ["scalars", "metadata_t._parse_words_left14"]
+                          },
+                          "right" : {
+                            "type" : "hexstr",
+                            "value" : "0xffff"
+                          }
+                        }
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0xffff"
+                      }
+                    }
+                  }
+                }
+              ],
+              "op" : "set"
+            }
+          ],
+          "transitions" : [
+            {
+              "type" : "default",
+              "value" : null,
+              "mask" : null,
+              "next_state" : "parse_int_hop_hop_latency"
+            }
+          ],
+          "transition_key" : []
+        },
+        {
+          "name" : "parse_int_hop_hop_latency",
+          "id" : 10,
+          "parser_ops" : [
+            {
+              "parameters" : [
+                {
+                  "type" : "field",
+                  "value" : ["scalars", "tmp_1"]
+                },
+                {
+                  "type" : "expression",
+                  "value" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "&",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["int_header", "instruction_mask"]
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0x2000"
+                      }
+                    }
+                  }
+                }
+              ],
+              "op" : "set"
+            }
+          ],
+          "transitions" : [
+            {
+              "type" : "hexstr",
+              "value" : "0x0000",
+              "mask" : null,
+              "next_state" : "parse_int_hop_q_occupancy"
+            },
+            {
+              "type" : "default",
+              "value" : null,
+              "mask" : null,
+              "next_state" : "parse_int_hop_hop_latency_extract"
+            }
+          ],
+          "transition_key" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp_1"]
+            }
+          ]
+        },
+        {
+          "name" : "parse_int_hop_hop_latency_extract",
+          "id" : 11,
+          "parser_ops" : [
+            {
+              "parameters" : [
+                {
+                  "type" : "stack",
+                  "value" : "int_hop_latency"
+                }
+              ],
+              "op" : "extract"
+            },
+            {
+              "parameters" : [
+                {
+                  "type" : "field",
+                  "value" : ["scalars", "metadata_t._parse_words_left14"]
+                },
+                {
+                  "type" : "expression",
+                  "value" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "&",
+                      "left" : {
+                        "type" : "expression",
+                        "value" : {
+                          "op" : "+",
+                          "left" : {
+                            "type" : "field",
+                            "value" : ["scalars", "metadata_t._parse_words_left14"]
+                          },
+                          "right" : {
+                            "type" : "hexstr",
+                            "value" : "0xffff"
+                          }
+                        }
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0xffff"
+                      }
+                    }
+                  }
+                }
+              ],
+              "op" : "set"
+            }
+          ],
+          "transitions" : [
+            {
+              "type" : "default",
+              "value" : null,
+              "mask" : null,
+              "next_state" : "parse_int_hop_q_occupancy"
+            }
+          ],
+          "transition_key" : []
+        },
+        {
+          "name" : "parse_int_hop_q_occupancy",
+          "id" : 12,
+          "parser_ops" : [
+            {
+              "parameters" : [
+                {
+                  "type" : "field",
+                  "value" : ["scalars", "tmp_2"]
+                },
+                {
+                  "type" : "expression",
+                  "value" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "&",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["int_header", "instruction_mask"]
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0x1000"
+                      }
+                    }
+                  }
+                }
+              ],
+              "op" : "set"
+            }
+          ],
+          "transitions" : [
+            {
+              "type" : "hexstr",
+              "value" : "0x0000",
+              "mask" : null,
+              "next_state" : "parse_int_hop_ingress_tstamp"
+            },
+            {
+              "type" : "default",
+              "value" : null,
+              "mask" : null,
+              "next_state" : "parse_int_hop_q_occupancy_extract"
+            }
+          ],
+          "transition_key" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp_2"]
+            }
+          ]
+        },
+        {
+          "name" : "parse_int_hop_q_occupancy_extract",
+          "id" : 13,
+          "parser_ops" : [
+            {
+              "parameters" : [
+                {
+                  "type" : "stack",
+                  "value" : "int_q_occupancy"
+                }
+              ],
+              "op" : "extract"
+            },
+            {
+              "parameters" : [
+                {
+                  "type" : "field",
+                  "value" : ["scalars", "metadata_t._parse_words_left14"]
+                },
+                {
+                  "type" : "expression",
+                  "value" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "&",
+                      "left" : {
+                        "type" : "expression",
+                        "value" : {
+                          "op" : "+",
+                          "left" : {
+                            "type" : "field",
+                            "value" : ["scalars", "metadata_t._parse_words_left14"]
+                          },
+                          "right" : {
+                            "type" : "hexstr",
+                            "value" : "0xffff"
+                          }
+                        }
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0xffff"
+                      }
+                    }
+                  }
+                }
+              ],
+              "op" : "set"
+            }
+          ],
+          "transitions" : [
+            {
+              "type" : "default",
+              "value" : null,
+              "mask" : null,
+              "next_state" : "parse_int_hop_ingress_tstamp"
+            }
+          ],
+          "transition_key" : []
+        },
+        {
+          "name" : "parse_int_hop_ingress_tstamp",
+          "id" : 14,
+          "parser_ops" : [
+            {
+              "parameters" : [
+                {
+                  "type" : "field",
+                  "value" : ["scalars", "tmp_3"]
+                },
+                {
+                  "type" : "expression",
+                  "value" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "&",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["int_header", "instruction_mask"]
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0x0800"
+                      }
+                    }
+                  }
+                }
+              ],
+              "op" : "set"
+            }
+          ],
+          "transitions" : [
+            {
+              "type" : "hexstr",
+              "value" : "0x0000",
+              "mask" : null,
+              "next_state" : "parse_int_hop_egress_tstamp"
+            },
+            {
+              "type" : "default",
+              "value" : null,
+              "mask" : null,
+              "next_state" : "parse_int_hop_ingress_tstamp_extract"
+            }
+          ],
+          "transition_key" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp_3"]
+            }
+          ]
+        },
+        {
+          "name" : "parse_int_hop_ingress_tstamp_extract",
+          "id" : 15,
+          "parser_ops" : [
+            {
+              "parameters" : [
+                {
+                  "type" : "stack",
+                  "value" : "int_ingress_tstamp"
+                }
+              ],
+              "op" : "extract"
+            },
+            {
+              "parameters" : [
+                {
+                  "type" : "field",
+                  "value" : ["scalars", "metadata_t._parse_words_left14"]
+                },
+                {
+                  "type" : "expression",
+                  "value" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "&",
+                      "left" : {
+                        "type" : "expression",
+                        "value" : {
+                          "op" : "+",
+                          "left" : {
+                            "type" : "field",
+                            "value" : ["scalars", "metadata_t._parse_words_left14"]
+                          },
+                          "right" : {
+                            "type" : "hexstr",
+                            "value" : "0xfffe"
+                          }
+                        }
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0xffff"
+                      }
+                    }
+                  }
+                }
+              ],
+              "op" : "set"
+            }
+          ],
+          "transitions" : [
+            {
+              "type" : "default",
+              "value" : null,
+              "mask" : null,
+              "next_state" : "parse_int_hop_egress_tstamp"
+            }
+          ],
+          "transition_key" : []
+        },
+        {
+          "name" : "parse_int_hop_egress_tstamp",
+          "id" : 16,
+          "parser_ops" : [
+            {
+              "parameters" : [
+                {
+                  "type" : "field",
+                  "value" : ["scalars", "tmp_4"]
+                },
+                {
+                  "type" : "expression",
+                  "value" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "&",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["int_header", "instruction_mask"]
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0x0400"
+                      }
+                    }
+                  }
+                }
+              ],
+              "op" : "set"
+            }
+          ],
+          "transitions" : [
+            {
+              "type" : "hexstr",
+              "value" : "0x0000",
+              "mask" : null,
+              "next_state" : "parse_int_hop"
+            },
+            {
+              "type" : "default",
+              "value" : null,
+              "mask" : null,
+              "next_state" : "parse_int_hop_egress_tstamp_extract"
+            }
+          ],
+          "transition_key" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp_4"]
+            }
+          ]
+        },
+        {
+          "name" : "parse_int_hop_egress_tstamp_extract",
+          "id" : 17,
+          "parser_ops" : [
+            {
+              "parameters" : [
+                {
+                  "type" : "stack",
+                  "value" : "int_egress_tstamp"
+                }
+              ],
+              "op" : "extract"
+            },
+            {
+              "parameters" : [
+                {
+                  "type" : "field",
+                  "value" : ["scalars", "metadata_t._parse_words_left14"]
+                },
+                {
+                  "type" : "expression",
+                  "value" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "&",
+                      "left" : {
+                        "type" : "expression",
+                        "value" : {
+                          "op" : "+",
+                          "left" : {
+                            "type" : "field",
+                            "value" : ["scalars", "metadata_t._parse_words_left14"]
+                          },
+                          "right" : {
+                            "type" : "hexstr",
+                            "value" : "0xfffe"
+                          }
+                        }
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0xffff"
+                      }
+                    }
+                  }
+                }
+              ],
+              "op" : "set"
+            }
+          ],
+          "transitions" : [
+            {
+              "type" : "default",
+              "value" : null,
+              "mask" : null,
+              "next_state" : "parse_int_hop"
+            }
+          ],
+          "transition_key" : []
+        },
+        {
+          "name" : "parse_int_tail",
+          "id" : 18,
+          "parser_ops" : [
+            {
+              "parameters" : [
+                {
+                  "type" : "regular",
+                  "value" : "int_tail"
+                }
+              ],
+              "op" : "extract"
+            }
+          ],
+          "transitions" : [
+            {
+              "type" : "default",
+              "value" : null,
+              "mask" : null,
+              "next_state" : null
+            }
+          ],
+          "transition_key" : []
+        }
+      ]
+    }
+  ],
+  "parse_vsets" : [],
+  "deparsers" : [
+    {
+      "name" : "deparser",
+      "id" : 0,
+      "source_info" : {
+        "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+        "line" : 911,
+        "column" : 8,
+        "source_fragment" : "IntDeparser"
+      },
+      "order" : ["report_eth", "report_ipv4", "report_udp", "report_group_hdr", "report_individual_hdr", "ethernet", "ipv4", "tcp", "udp", "int_shim", "int_header", "int_switch_id[0]", "int_port_ids[0]", "int_hop_latency[0]", "int_q_occupancy[0]", "int_ingress_tstamp[0]", "int_egress_tstamp[0]", "int_switch_id[1]", "int_port_ids[1]", "int_hop_latency[1]", "int_q_occupancy[1]", "int_ingress_tstamp[1]", "int_egress_tstamp[1]", "int_switch_id[2]", "int_port_ids[2]", "int_hop_latency[2]", "int_q_occupancy[2]", "int_ingress_tstamp[2]", "int_egress_tstamp[2]", "int_switch_id[3]", "int_port_ids[3]", "int_hop_latency[3]", "int_q_occupancy[3]", "int_ingress_tstamp[3]", "int_egress_tstamp[3]", "int_switch_id[4]", "int_port_ids[4]", "int_hop_latency[4]", "int_q_occupancy[4]", "int_ingress_tstamp[4]", "int_egress_tstamp[4]", "int_switch_id[5]", "int_port_ids[5]", "int_hop_latency[5]", "int_q_occupancy[5]", "int_ingress_tstamp[5]", "int_egress_tstamp[5]", "int_q_congestion[0]", "int_q_congestion[1]", "int_q_congestion[2]", "int_q_congestion[3]", "int_q_congestion[4]", "int_q_congestion[5]", "int_egress_tx_util[0]", "int_egress_tx_util[1]", "int_egress_tx_util[2]", "int_egress_tx_util[3]", "int_egress_tx_util[4]", "int_egress_tx_util[5]", "int_tail"],
+      "primitives" : []
+    }
+  ],
+  "meter_arrays" : [],
+  "counter_arrays" : [
+    {
+      "name" : "IntIngress.ingress_pkt_counter",
+      "id" : 0,
+      "source_info" : {
+        "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+        "line" : 460,
+        "column" : 49,
+        "source_fragment" : "ingress_pkt_counter"
+      },
+      "size" : 1024,
+      "is_direct" : false
+    },
+    {
+      "name" : "IntIngress.int_pkt_counter",
+      "id" : 1,
+      "source_info" : {
+        "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+        "line" : 461,
+        "column" : 49,
+        "source_fragment" : "int_pkt_counter"
+      },
+      "size" : 1024,
+      "is_direct" : false
+    }
+  ],
+  "register_arrays" : [
+    {
+      "name" : "IntIngress.report_seq_reg",
+      "id" : 0,
+      "source_info" : {
+        "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+        "line" : 507,
+        "column" : 25,
+        "source_fragment" : "report_seq_reg"
+      },
+      "size" : 1,
+      "bitwidth" : 32
+    }
+  ],
+  "calculations" : [
+    {
+      "name" : "calc",
+      "id" : 0,
+      "source_info" : {
+        "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+        "line" : 883,
+        "column" : 8,
+        "source_fragment" : "update_checksum( ..."
+      },
+      "algo" : "csum16",
+      "input" : [
+        {
+          "type" : "field",
+          "value" : ["report_ipv4", "version"]
+        },
+        {
+          "type" : "field",
+          "value" : ["report_ipv4", "ihl"]
+        },
+        {
+          "type" : "field",
+          "value" : ["report_ipv4", "diffserv"]
+        },
+        {
+          "type" : "field",
+          "value" : ["report_ipv4", "total_len"]
+        },
+        {
+          "type" : "field",
+          "value" : ["report_ipv4", "identification"]
+        },
+        {
+          "type" : "field",
+          "value" : ["report_ipv4", "flags"]
+        },
+        {
+          "type" : "field",
+          "value" : ["report_ipv4", "frag_offset"]
+        },
+        {
+          "type" : "field",
+          "value" : ["report_ipv4", "ttl"]
+        },
+        {
+          "type" : "field",
+          "value" : ["report_ipv4", "protocol"]
+        },
+        {
+          "type" : "field",
+          "value" : ["report_ipv4", "src_addr"]
+        },
+        {
+          "type" : "field",
+          "value" : ["report_ipv4", "dst_addr"]
+        }
+      ]
+    },
+    {
+      "name" : "calc_0",
+      "id" : 1,
+      "source_info" : {
+        "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+        "line" : 894,
+        "column" : 8,
+        "source_fragment" : "update_checksum( ..."
+      },
+      "algo" : "csum16",
+      "input" : [
+        {
+          "type" : "field",
+          "value" : ["ipv4", "version"]
+        },
+        {
+          "type" : "field",
+          "value" : ["ipv4", "ihl"]
+        },
+        {
+          "type" : "field",
+          "value" : ["ipv4", "diffserv"]
+        },
+        {
+          "type" : "field",
+          "value" : ["ipv4", "total_len"]
+        },
+        {
+          "type" : "field",
+          "value" : ["ipv4", "identification"]
+        },
+        {
+          "type" : "field",
+          "value" : ["ipv4", "flags"]
+        },
+        {
+          "type" : "field",
+          "value" : ["ipv4", "frag_offset"]
+        },
+        {
+          "type" : "field",
+          "value" : ["ipv4", "ttl"]
+        },
+        {
+          "type" : "field",
+          "value" : ["ipv4", "protocol"]
+        },
+        {
+          "type" : "field",
+          "value" : ["ipv4", "src_addr"]
+        },
+        {
+          "type" : "field",
+          "value" : ["ipv4", "dst_addr"]
+        }
+      ]
+    },
+    {
+      "name" : "calc_1",
+      "id" : 2,
+      "source_info" : {
+        "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+        "line" : 437,
+        "column" : 8,
+        "source_fragment" : "verify_checksum( ..."
+      },
+      "algo" : "csum16",
+      "input" : [
+        {
+          "type" : "field",
+          "value" : ["ipv4", "version"]
+        },
+        {
+          "type" : "field",
+          "value" : ["ipv4", "ihl"]
+        },
+        {
+          "type" : "field",
+          "value" : ["ipv4", "diffserv"]
+        },
+        {
+          "type" : "field",
+          "value" : ["ipv4", "total_len"]
+        },
+        {
+          "type" : "field",
+          "value" : ["ipv4", "identification"]
+        },
+        {
+          "type" : "field",
+          "value" : ["ipv4", "flags"]
+        },
+        {
+          "type" : "field",
+          "value" : ["ipv4", "frag_offset"]
+        },
+        {
+          "type" : "field",
+          "value" : ["ipv4", "ttl"]
+        },
+        {
+          "type" : "field",
+          "value" : ["ipv4", "protocol"]
+        },
+        {
+          "type" : "field",
+          "value" : ["ipv4", "src_addr"]
+        },
+        {
+          "type" : "field",
+          "value" : ["ipv4", "dst_addr"]
+        }
+      ]
+    }
+  ],
+  "learn_lists" : [],
+  "actions" : [
+    {
+      "name" : "NoAction",
+      "id" : 0,
+      "runtime_data" : [],
+      "primitives" : []
+    },
+    {
+      "name" : "NoAction",
+      "id" : 1,
+      "runtime_data" : [],
+      "primitives" : []
+    },
+    {
+      "name" : "NoAction",
+      "id" : 2,
+      "runtime_data" : [],
+      "primitives" : []
+    },
+    {
+      "name" : "NoAction",
+      "id" : 3,
+      "runtime_data" : [],
+      "primitives" : []
+    },
+    {
+      "name" : "NoAction",
+      "id" : 4,
+      "runtime_data" : [],
+      "primitives" : []
+    },
+    {
+      "name" : "IntIngress.ipv4_forward",
+      "id" : 5,
+      "runtime_data" : [
+        {
+          "name" : "dst_mac",
+          "bitwidth" : 48
+        },
+        {
+          "name" : "port",
+          "bitwidth" : 9
+        }
+      ],
+      "primitives" : [
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["standard_metadata", "egress_spec"]
+            },
+            {
+              "type" : "runtime_data",
+              "value" : 1
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 467,
+            "column" : 8,
+            "source_fragment" : "smeta.egress_spec = port"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["ethernet", "src_addr"]
+            },
+            {
+              "type" : "field",
+              "value" : ["ethernet", "dst_addr"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 468,
+            "column" : 8,
+            "source_fragment" : "hdr.ethernet.src_addr = hdr.ethernet.dst_addr"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["ethernet", "dst_addr"]
+            },
+            {
+              "type" : "runtime_data",
+              "value" : 0
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 469,
+            "column" : 8,
+            "source_fragment" : "hdr.ethernet.dst_addr = dst_mac"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["ipv4", "ttl"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "+",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["ipv4", "ttl"]
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0xff"
+                      }
+                    }
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0xff"
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 470,
+            "column" : 8,
+            "source_fragment" : "hdr.ipv4.ttl = hdr.ipv4.ttl - 1"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "IntIngress.drop_packet",
+      "id" : 6,
+      "runtime_data" : [],
+      "primitives" : [
+        {
+          "op" : "mark_to_drop",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "standard_metadata"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 474,
+            "column" : 8,
+            "source_fragment" : "mark_to_drop(smeta)"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "IntIngress.int_set_source",
+      "id" : 7,
+      "runtime_data" : [],
+      "primitives" : [
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata_t._int_meta_source0"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x01"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 479,
+            "column" : 8,
+            "source_fragment" : "meta.int_meta.source = 1"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "IntIngress.int_set_sink",
+      "id" : 8,
+      "runtime_data" : [
+        {
+          "name" : "switch_id",
+          "bitwidth" : 32
+        }
+      ],
+      "primitives" : [
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata_t._int_meta_sink1"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x01"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 484,
+            "column" : 8,
+            "source_fragment" : "meta.int_meta.sink = 1"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata_t._int_meta_switch_id3"]
+            },
+            {
+              "type" : "runtime_data",
+              "value" : 0
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 485,
+            "column" : 8,
+            "source_fragment" : "meta.int_meta.switch_id = switch_id"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "IntIngress.int_set_transit",
+      "id" : 9,
+      "runtime_data" : [
+        {
+          "name" : "switch_id",
+          "bitwidth" : 32
+        }
+      ],
+      "primitives" : [
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata_t._int_meta_transit2"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x01"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 490,
+            "column" : 8,
+            "source_fragment" : "meta.int_meta.transit = 1"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata_t._int_meta_switch_id3"]
+            },
+            {
+              "type" : "runtime_data",
+              "value" : 0
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 491,
+            "column" : 8,
+            "source_fragment" : "meta.int_meta.switch_id = switch_id"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "IntIngress.int_set_report_config",
+      "id" : 10,
+      "runtime_data" : [
+        {
+          "name" : "switch_mac",
+          "bitwidth" : 48
+        },
+        {
+          "name" : "switch_ip",
+          "bitwidth" : 32
+        },
+        {
+          "name" : "collector_mac",
+          "bitwidth" : 48
+        },
+        {
+          "name" : "collector_ip",
+          "bitwidth" : 32
+        },
+        {
+          "name" : "collector_port",
+          "bitwidth" : 16
+        }
+      ],
+      "primitives" : [
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata_t._report_switch_mac15"]
+            },
+            {
+              "type" : "runtime_data",
+              "value" : 0
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 500,
+            "column" : 8,
+            "source_fragment" : "meta.report_switch_mac = switch_mac"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata_t._report_switch_ip16"]
+            },
+            {
+              "type" : "runtime_data",
+              "value" : 1
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 501,
+            "column" : 8,
+            "source_fragment" : "meta.report_switch_ip = switch_ip"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata_t._report_collector_mac17"]
+            },
+            {
+              "type" : "runtime_data",
+              "value" : 2
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 502,
+            "column" : 8,
+            "source_fragment" : "meta.report_collector_mac = collector_mac"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata_t._report_collector_ip18"]
+            },
+            {
+              "type" : "runtime_data",
+              "value" : 3
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 503,
+            "column" : 8,
+            "source_fragment" : "meta.report_collector_ip = collector_ip"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata_t._report_collector_port19"]
+            },
+            {
+              "type" : "runtime_data",
+              "value" : 4
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 504,
+            "column" : 8,
+            "source_fragment" : "meta.report_collector_port = collector_port"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "int606",
+      "id" : 11,
+      "runtime_data" : [],
+      "primitives" : [
+        {
+          "op" : "register_read",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata_t._report_seq_no20"]
+            },
+            {
+              "type" : "register_array",
+              "value" : "IntIngress.report_seq_reg"
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x00000000"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 606,
+            "column" : 20,
+            "source_fragment" : "report_seq_reg.read(meta.report_seq_no, 0)"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp_5"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "+",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["scalars", "metadata_t._report_seq_no20"]
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0x00000001"
+                      }
+                    }
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0xffffffff"
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 607,
+            "column" : 44,
+            "source_fragment" : "meta.report_seq_no + 1"
+          }
+        },
+        {
+          "op" : "register_write",
+          "parameters" : [
+            {
+              "type" : "register_array",
+              "value" : "IntIngress.report_seq_reg"
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x00000000"
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp_5"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 607,
+            "column" : 20,
+            "source_fragment" : "report_seq_reg.write(0, meta.report_seq_no + 1)"
+          }
+        },
+        {
+          "op" : "clone_ingress_pkt_to_egress",
+          "parameters" : [
+            {
+              "type" : "hexstr",
+              "value" : "0x000001f4"
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x1"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 608,
+            "column" : 20,
+            "source_fragment" : "clone_preserving_field_list(CloneType.I2E, REPORT_MIRROR_SESSION, 1)"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "int593",
+      "id" : 12,
+      "runtime_data" : [],
+      "primitives" : [
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp_6"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "field",
+                    "value" : ["standard_metadata", "ingress_port"]
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0xffffffff"
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 593,
+            "column" : 38,
+            "source_fragment" : "(bit<32>) smeta.ingress_port"
+          }
+        },
+        {
+          "op" : "count",
+          "parameters" : [
+            {
+              "type" : "counter_array",
+              "value" : "IntIngress.int_pkt_counter"
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp_6"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 593,
+            "column" : 16,
+            "source_fragment" : "int_pkt_counter.count((bit<32>) smeta.ingress_port)"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "int583",
+      "id" : 13,
+      "runtime_data" : [],
+      "primitives" : [
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp_7"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "field",
+                    "value" : ["standard_metadata", "ingress_port"]
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0xffffffff"
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 583,
+            "column" : 34,
+            "source_fragment" : "(bit<32>) smeta.ingress_port"
+          }
+        },
+        {
+          "op" : "count",
+          "parameters" : [
+            {
+              "type" : "counter_array",
+              "value" : "IntIngress.ingress_pkt_counter"
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp_7"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 583,
+            "column" : 8,
+            "source_fragment" : "ingress_pkt_counter.count((bit<32>) smeta.ingress_port)"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "int622",
+      "id" : 14,
+      "runtime_data" : [],
+      "primitives" : [
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata_t._ingress_port10"]
+            },
+            {
+              "type" : "field",
+              "value" : ["standard_metadata", "ingress_port"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 622,
+            "column" : 8,
+            "source_fragment" : "meta.ingress_port = smeta.ingress_port"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "IntEgress.int_source_add_shim",
+      "id" : 15,
+      "runtime_data" : [],
+      "primitives" : [
+        {
+          "op" : "add_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_shim"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 638,
+            "column" : 8,
+            "source_fragment" : "hdr.int_shim.setValid()"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["int_shim", "int_type"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x01"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 639,
+            "column" : 8,
+            "source_fragment" : "hdr.int_shim.int_type = (bit<8>) 1"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["int_shim", "length"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x00"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 640,
+            "column" : 8,
+            "source_fragment" : "hdr.int_shim.length = 0"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["int_shim", "orig_dscp"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : ">>",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["ipv4", "diffserv"]
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0x2"
+                      }
+                    }
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0xff"
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 641,
+            "column" : 8,
+            "source_fragment" : "hdr.int_shim.orig_dscp = hdr.ipv4.diffserv >> 2"
+          }
+        },
+        {
+          "op" : "add_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_header"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 643,
+            "column" : 8,
+            "source_fragment" : "hdr.int_header.setValid()"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["int_header", "ver"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x00"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 33,
+            "column" : 27,
+            "source_fragment" : "0; ..."
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["int_header", "rep"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x00"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 645,
+            "column" : 8,
+            "source_fragment" : "hdr.int_header.rep = 0"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["int_header", "c_bit"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x00"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 646,
+            "column" : 8,
+            "source_fragment" : "hdr.int_header.c_bit = 0"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["int_header", "e_bit"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x00"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 647,
+            "column" : 8,
+            "source_fragment" : "hdr.int_header.e_bit = 0"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["int_header", "m_bit"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x00"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 648,
+            "column" : 8,
+            "source_fragment" : "hdr.int_header.m_bit = 0"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["int_header", "hop_metadata_len"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x08"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 652,
+            "column" : 8,
+            "source_fragment" : "hdr.int_header.hop_metadata_len = 8"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["int_header", "remaining_hop_cnt"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x06"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 653,
+            "column" : 8,
+            "source_fragment" : "hdr.int_header.remaining_hop_cnt = 6"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["int_header", "instruction_mask"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0xfc00"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 655,
+            "column" : 8,
+            "source_fragment" : "hdr.int_header.instruction_mask = 0xFC00"
+          }
+        },
+        {
+          "op" : "add_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_tail"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 657,
+            "column" : 8,
+            "source_fragment" : "hdr.int_tail.setValid()"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["int_tail", "next_proto"]
+            },
+            {
+              "type" : "field",
+              "value" : ["ipv4", "protocol"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 658,
+            "column" : 8,
+            "source_fragment" : "hdr.int_tail.next_proto = hdr.ipv4.protocol"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["int_tail", "dest_port"]
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata_t._l4_dst_port9"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 659,
+            "column" : 8,
+            "source_fragment" : "hdr.int_tail.dest_port = meta"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["int_tail", "dscp"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : ">>",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["ipv4", "diffserv"]
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0x2"
+                      }
+                    }
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0xff"
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 660,
+            "column" : 8,
+            "source_fragment" : "hdr.int_tail.dscp = hdr.int_shim.orig_dscp"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["ipv4", "protocol"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0xfd"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 30,
+            "column" : 30,
+            "source_fragment" : "0xFD; /* Experimental - INT over UDP/TCP */ ..."
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["ipv4", "total_len"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "+",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["ipv4", "total_len"]
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0x0010"
+                      }
+                    }
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0xffff"
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 674,
+            "column" : 8,
+            "source_fragment" : "hdr.ipv4.total_len = hdr.ipv4.total_len + INT_FIXED_OVERHEAD_BYTES"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["ipv4", "diffserv"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x5c"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 677,
+            "column" : 8,
+            "source_fragment" : "hdr.ipv4.diffserv = 0x5C"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "IntEgress.int_transit_add_switch_id",
+      "id" : 16,
+      "runtime_data" : [],
+      "primitives" : [
+        {
+          "op" : "push",
+          "parameters" : [
+            {
+              "type" : "header_stack",
+              "value" : "int_switch_id"
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x1"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 684,
+            "column" : 8,
+            "source_fragment" : "hdr.int_switch_id.push_front(1)"
+          }
+        },
+        {
+          "op" : "add_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_switch_id[0]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 685,
+            "column" : 8,
+            "source_fragment" : "hdr.int_switch_id[0].setValid()"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["int_switch_id[0]", "switch_id"]
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata_t._int_meta_switch_id3"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 686,
+            "column" : 8,
+            "source_fragment" : "hdr.int_switch_id[0].switch_id = meta"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata_t._int_meta_insert_byte_cnt4"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "+",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["scalars", "metadata_t._int_meta_insert_byte_cnt4"]
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0x0004"
+                      }
+                    }
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0xffff"
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 687,
+            "column" : 8,
+            "source_fragment" : "meta.int_meta.insert_byte_cnt = meta.int_meta.insert_byte_cnt + 4"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "IntEgress.int_transit_add_port_ids",
+      "id" : 17,
+      "runtime_data" : [],
+      "primitives" : [
+        {
+          "op" : "push",
+          "parameters" : [
+            {
+              "type" : "header_stack",
+              "value" : "int_port_ids"
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x1"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 692,
+            "column" : 8,
+            "source_fragment" : "hdr.int_port_ids.push_front(1)"
+          }
+        },
+        {
+          "op" : "add_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_port_ids[0]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 693,
+            "column" : 8,
+            "source_fragment" : "hdr.int_port_ids[0].setValid()"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["int_port_ids[0]", "ingress_port_id"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "field",
+                    "value" : ["scalars", "metadata_t._ingress_port10"]
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0xffff"
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 694,
+            "column" : 8,
+            "source_fragment" : "hdr.int_port_ids[0].ingress_port_id = (bit<16>) meta.ingress_port"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["int_port_ids[0]", "egress_port_id"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "field",
+                    "value" : ["standard_metadata", "egress_port"]
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0xffff"
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 695,
+            "column" : 8,
+            "source_fragment" : "hdr.int_port_ids[0].egress_port_id = (bit<16>) smeta.egress_port"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata_t._int_meta_insert_byte_cnt4"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "+",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["scalars", "metadata_t._int_meta_insert_byte_cnt4"]
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0x0004"
+                      }
+                    }
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0xffff"
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 696,
+            "column" : 8,
+            "source_fragment" : "meta.int_meta.insert_byte_cnt = meta.int_meta.insert_byte_cnt + 4"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "IntEgress.int_transit_add_hop_latency",
+      "id" : 18,
+      "runtime_data" : [],
+      "primitives" : [
+        {
+          "op" : "push",
+          "parameters" : [
+            {
+              "type" : "header_stack",
+              "value" : "int_hop_latency"
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x1"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 704,
+            "column" : 8,
+            "source_fragment" : "hdr.int_hop_latency.push_front(1)"
+          }
+        },
+        {
+          "op" : "add_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_hop_latency[0]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 705,
+            "column" : 8,
+            "source_fragment" : "hdr.int_hop_latency[0].setValid()"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["int_hop_latency[0]", "hop_latency"]
+            },
+            {
+              "type" : "field",
+              "value" : ["standard_metadata", "deq_timedelta"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 706,
+            "column" : 8,
+            "source_fragment" : "hdr.int_hop_latency[0].hop_latency = smeta.deq_timedelta"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata_t._int_meta_insert_byte_cnt4"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "+",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["scalars", "metadata_t._int_meta_insert_byte_cnt4"]
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0x0004"
+                      }
+                    }
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0xffff"
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 707,
+            "column" : 8,
+            "source_fragment" : "meta.int_meta.insert_byte_cnt = meta.int_meta.insert_byte_cnt + 4"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "IntEgress.int_transit_add_q_occupancy",
+      "id" : 19,
+      "runtime_data" : [],
+      "primitives" : [
+        {
+          "op" : "push",
+          "parameters" : [
+            {
+              "type" : "header_stack",
+              "value" : "int_q_occupancy"
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x1"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 712,
+            "column" : 8,
+            "source_fragment" : "hdr.int_q_occupancy.push_front(1)"
+          }
+        },
+        {
+          "op" : "add_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_q_occupancy[0]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 713,
+            "column" : 8,
+            "source_fragment" : "hdr.int_q_occupancy[0].setValid()"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["int_q_occupancy[0]", "q_id"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x00"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 714,
+            "column" : 8,
+            "source_fragment" : "hdr.int_q_occupancy[0].q_id = 0"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["int_q_occupancy[0]", "q_occupancy"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "field",
+                    "value" : ["standard_metadata", "deq_qdepth"]
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0xffffff"
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 715,
+            "column" : 8,
+            "source_fragment" : "hdr.int_q_occupancy[0].q_occupancy = (bit<24>) smeta.deq_qdepth"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata_t._int_meta_insert_byte_cnt4"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "+",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["scalars", "metadata_t._int_meta_insert_byte_cnt4"]
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0x0004"
+                      }
+                    }
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0xffff"
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 716,
+            "column" : 8,
+            "source_fragment" : "meta.int_meta.insert_byte_cnt = meta.int_meta.insert_byte_cnt + 4"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "IntEgress.int_transit_add_ingress_tstamp",
+      "id" : 20,
+      "runtime_data" : [],
+      "primitives" : [
+        {
+          "op" : "push",
+          "parameters" : [
+            {
+              "type" : "header_stack",
+              "value" : "int_ingress_tstamp"
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x1"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 721,
+            "column" : 8,
+            "source_fragment" : "hdr.int_ingress_tstamp.push_front(1)"
+          }
+        },
+        {
+          "op" : "add_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_ingress_tstamp[0]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 722,
+            "column" : 8,
+            "source_fragment" : "hdr.int_ingress_tstamp[0].setValid()"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["int_ingress_tstamp[0]", "ingress_tstamp"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "field",
+                    "value" : ["scalars", "metadata_t._ingress_tstamp12"]
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0xffffffffffffffff"
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 723,
+            "column" : 8,
+            "source_fragment" : "hdr.int_ingress_tstamp[0].ingress_tstamp = (bit<64>) meta.ingress_tstamp"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata_t._int_meta_insert_byte_cnt4"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "+",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["scalars", "metadata_t._int_meta_insert_byte_cnt4"]
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0x0008"
+                      }
+                    }
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0xffff"
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 724,
+            "column" : 8,
+            "source_fragment" : "meta.int_meta.insert_byte_cnt = meta.int_meta.insert_byte_cnt + 8"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "IntEgress.int_transit_add_egress_tstamp",
+      "id" : 21,
+      "runtime_data" : [],
+      "primitives" : [
+        {
+          "op" : "push",
+          "parameters" : [
+            {
+              "type" : "header_stack",
+              "value" : "int_egress_tstamp"
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x1"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 729,
+            "column" : 8,
+            "source_fragment" : "hdr.int_egress_tstamp.push_front(1)"
+          }
+        },
+        {
+          "op" : "add_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_egress_tstamp[0]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 730,
+            "column" : 8,
+            "source_fragment" : "hdr.int_egress_tstamp[0].setValid()"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["int_egress_tstamp[0]", "egress_tstamp"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "field",
+                    "value" : ["scalars", "metadata_t._egress_tstamp13"]
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0xffffffffffffffff"
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 731,
+            "column" : 8,
+            "source_fragment" : "hdr.int_egress_tstamp[0].egress_tstamp = (bit<64>) meta.egress_tstamp"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata_t._int_meta_insert_byte_cnt4"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "+",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["scalars", "metadata_t._int_meta_insert_byte_cnt4"]
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0x0008"
+                      }
+                    }
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0xffff"
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 732,
+            "column" : 8,
+            "source_fragment" : "meta.int_meta.insert_byte_cnt = meta.int_meta.insert_byte_cnt + 8"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "IntEgress.int_sink_remove_headers",
+      "id" : 22,
+      "runtime_data" : [],
+      "primitives" : [
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["ipv4", "diffserv"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "<<",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["int_shim", "orig_dscp"]
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0x2"
+                      }
+                    }
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0xff"
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 739,
+            "column" : 8,
+            "source_fragment" : "hdr.ipv4.diffserv = hdr.int_shim.orig_dscp << 2"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["ipv4", "protocol"]
+            },
+            {
+              "type" : "field",
+              "value" : ["int_tail", "next_proto"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 743,
+            "column" : 8,
+            "source_fragment" : "hdr.ipv4.protocol = hdr.int_tail.next_proto"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["ipv4", "total_len"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "-",
+                      "left" : {
+                        "type" : "expression",
+                        "value" : {
+                          "op" : "&",
+                          "left" : {
+                            "type" : "expression",
+                            "value" : {
+                              "op" : "+",
+                              "left" : {
+                                "type" : "field",
+                                "value" : ["ipv4", "total_len"]
+                              },
+                              "right" : {
+                                "type" : "hexstr",
+                                "value" : "0xfff0"
+                              }
+                            }
+                          },
+                          "right" : {
+                            "type" : "hexstr",
+                            "value" : "0xffff"
+                          }
+                        }
+                      },
+                      "right" : {
+                        "type" : "expression",
+                        "value" : {
+                          "op" : "&",
+                          "left" : {
+                            "type" : "expression",
+                            "value" : {
+                              "op" : "<<",
+                              "left" : {
+                                "type" : "expression",
+                                "value" : {
+                                  "op" : "&",
+                                  "left" : {
+                                    "type" : "field",
+                                    "value" : ["int_shim", "length"]
+                                  },
+                                  "right" : {
+                                    "type" : "hexstr",
+                                    "value" : "0xffff"
+                                  }
+                                }
+                              },
+                              "right" : {
+                                "type" : "hexstr",
+                                "value" : "0x2"
+                              }
+                            }
+                          },
+                          "right" : {
+                            "type" : "hexstr",
+                            "value" : "0xffff"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0xffff"
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 746,
+            "column" : 8,
+            "source_fragment" : "hdr.ipv4.total_len = hdr.ipv4.total_len - INT_FIXED_OVERHEAD_BYTES - ((bit<16>)hdr.int_shim.length << 2)"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_shim"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 749,
+            "column" : 8,
+            "source_fragment" : "hdr.int_shim.setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_header"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 750,
+            "column" : 8,
+            "source_fragment" : "hdr.int_header.setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_switch_id[0]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 753,
+            "column" : 8,
+            "source_fragment" : "hdr.int_switch_id[0].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_switch_id[1]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 754,
+            "column" : 8,
+            "source_fragment" : "hdr.int_switch_id[1].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_switch_id[2]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 755,
+            "column" : 8,
+            "source_fragment" : "hdr.int_switch_id[2].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_switch_id[3]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 756,
+            "column" : 8,
+            "source_fragment" : "hdr.int_switch_id[3].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_switch_id[4]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 757,
+            "column" : 8,
+            "source_fragment" : "hdr.int_switch_id[4].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_switch_id[5]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 758,
+            "column" : 8,
+            "source_fragment" : "hdr.int_switch_id[5].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_port_ids[0]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 760,
+            "column" : 8,
+            "source_fragment" : "hdr.int_port_ids[0].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_port_ids[1]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 761,
+            "column" : 8,
+            "source_fragment" : "hdr.int_port_ids[1].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_port_ids[2]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 762,
+            "column" : 8,
+            "source_fragment" : "hdr.int_port_ids[2].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_port_ids[3]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 763,
+            "column" : 8,
+            "source_fragment" : "hdr.int_port_ids[3].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_port_ids[4]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 764,
+            "column" : 8,
+            "source_fragment" : "hdr.int_port_ids[4].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_port_ids[5]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 765,
+            "column" : 8,
+            "source_fragment" : "hdr.int_port_ids[5].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_hop_latency[0]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 767,
+            "column" : 8,
+            "source_fragment" : "hdr.int_hop_latency[0].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_hop_latency[1]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 768,
+            "column" : 8,
+            "source_fragment" : "hdr.int_hop_latency[1].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_hop_latency[2]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 769,
+            "column" : 8,
+            "source_fragment" : "hdr.int_hop_latency[2].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_hop_latency[3]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 770,
+            "column" : 8,
+            "source_fragment" : "hdr.int_hop_latency[3].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_hop_latency[4]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 771,
+            "column" : 8,
+            "source_fragment" : "hdr.int_hop_latency[4].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_hop_latency[5]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 772,
+            "column" : 8,
+            "source_fragment" : "hdr.int_hop_latency[5].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_q_occupancy[0]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 774,
+            "column" : 8,
+            "source_fragment" : "hdr.int_q_occupancy[0].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_q_occupancy[1]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 775,
+            "column" : 8,
+            "source_fragment" : "hdr.int_q_occupancy[1].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_q_occupancy[2]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 776,
+            "column" : 8,
+            "source_fragment" : "hdr.int_q_occupancy[2].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_q_occupancy[3]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 777,
+            "column" : 8,
+            "source_fragment" : "hdr.int_q_occupancy[3].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_q_occupancy[4]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 778,
+            "column" : 8,
+            "source_fragment" : "hdr.int_q_occupancy[4].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_q_occupancy[5]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 779,
+            "column" : 8,
+            "source_fragment" : "hdr.int_q_occupancy[5].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_ingress_tstamp[0]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 781,
+            "column" : 8,
+            "source_fragment" : "hdr.int_ingress_tstamp[0].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_ingress_tstamp[1]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 782,
+            "column" : 8,
+            "source_fragment" : "hdr.int_ingress_tstamp[1].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_ingress_tstamp[2]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 783,
+            "column" : 8,
+            "source_fragment" : "hdr.int_ingress_tstamp[2].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_ingress_tstamp[3]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 784,
+            "column" : 8,
+            "source_fragment" : "hdr.int_ingress_tstamp[3].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_ingress_tstamp[4]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 785,
+            "column" : 8,
+            "source_fragment" : "hdr.int_ingress_tstamp[4].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_ingress_tstamp[5]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 786,
+            "column" : 8,
+            "source_fragment" : "hdr.int_ingress_tstamp[5].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_egress_tstamp[0]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 788,
+            "column" : 8,
+            "source_fragment" : "hdr.int_egress_tstamp[0].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_egress_tstamp[1]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 789,
+            "column" : 8,
+            "source_fragment" : "hdr.int_egress_tstamp[1].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_egress_tstamp[2]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 790,
+            "column" : 8,
+            "source_fragment" : "hdr.int_egress_tstamp[2].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_egress_tstamp[3]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 791,
+            "column" : 8,
+            "source_fragment" : "hdr.int_egress_tstamp[3].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_egress_tstamp[4]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 792,
+            "column" : 8,
+            "source_fragment" : "hdr.int_egress_tstamp[4].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_egress_tstamp[5]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 793,
+            "column" : 8,
+            "source_fragment" : "hdr.int_egress_tstamp[5].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_q_congestion[0]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 795,
+            "column" : 8,
+            "source_fragment" : "hdr.int_q_congestion[0].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_q_congestion[1]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 796,
+            "column" : 8,
+            "source_fragment" : "hdr.int_q_congestion[1].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_q_congestion[2]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 797,
+            "column" : 8,
+            "source_fragment" : "hdr.int_q_congestion[2].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_q_congestion[3]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 798,
+            "column" : 8,
+            "source_fragment" : "hdr.int_q_congestion[3].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_q_congestion[4]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 799,
+            "column" : 8,
+            "source_fragment" : "hdr.int_q_congestion[4].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_q_congestion[5]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 800,
+            "column" : 8,
+            "source_fragment" : "hdr.int_q_congestion[5].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_egress_tx_util[0]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 802,
+            "column" : 8,
+            "source_fragment" : "hdr.int_egress_tx_util[0].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_egress_tx_util[1]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 803,
+            "column" : 8,
+            "source_fragment" : "hdr.int_egress_tx_util[1].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_egress_tx_util[2]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 804,
+            "column" : 8,
+            "source_fragment" : "hdr.int_egress_tx_util[2].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_egress_tx_util[3]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 805,
+            "column" : 8,
+            "source_fragment" : "hdr.int_egress_tx_util[3].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_egress_tx_util[4]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 806,
+            "column" : 8,
+            "source_fragment" : "hdr.int_egress_tx_util[4].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_egress_tx_util[5]"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 807,
+            "column" : 8,
+            "source_fragment" : "hdr.int_egress_tx_util[5].setInvalid()"
+          }
+        },
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "int_tail"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 809,
+            "column" : 8,
+            "source_fragment" : "hdr.int_tail.setInvalid()"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "int831",
+      "id" : 23,
+      "runtime_data" : [],
+      "primitives" : [
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["int_header", "remaining_hop_cnt"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "+",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["int_header", "remaining_hop_cnt"]
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0xff"
+                      }
+                    }
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0xff"
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 831,
+            "column" : 16,
+            "source_fragment" : "hdr.int_header.remaining_hop_cnt = hdr.int_header.remaining_hop_cnt - 1"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata_t._int_meta_insert_byte_cnt4"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x0000"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 834,
+            "column" : 16,
+            "source_fragment" : "meta.int_meta.insert_byte_cnt = 0"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "int857",
+      "id" : 24,
+      "runtime_data" : [],
+      "primitives" : [
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["ipv4", "total_len"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "+",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["ipv4", "total_len"]
+                      },
+                      "right" : {
+                        "type" : "field",
+                        "value" : ["scalars", "metadata_t._int_meta_insert_byte_cnt4"]
+                      }
+                    }
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0xffff"
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 857,
+            "column" : 16,
+            "source_fragment" : "hdr.ipv4.total_len = hdr.ipv4.total_len + meta.int_meta.insert_byte_cnt"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["int_shim", "length"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "+",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["int_shim", "length"]
+                      },
+                      "right" : {
+                        "type" : "expression",
+                        "value" : {
+                          "op" : "&",
+                          "left" : {
+                            "type" : "expression",
+                            "value" : {
+                              "op" : "&",
+                              "left" : {
+                                "type" : "expression",
+                                "value" : {
+                                  "op" : "&",
+                                  "left" : {
+                                    "type" : "expression",
+                                    "value" : {
+                                      "op" : ">>",
+                                      "left" : {
+                                        "type" : "field",
+                                        "value" : ["scalars", "metadata_t._int_meta_insert_byte_cnt4"]
+                                      },
+                                      "right" : {
+                                        "type" : "hexstr",
+                                        "value" : "0x2"
+                                      }
+                                    }
+                                  },
+                                  "right" : {
+                                    "type" : "hexstr",
+                                    "value" : "0xffff"
+                                  }
+                                }
+                              },
+                              "right" : {
+                                "type" : "hexstr",
+                                "value" : "0x00ff"
+                              }
+                            }
+                          },
+                          "right" : {
+                            "type" : "hexstr",
+                            "value" : "0xff"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0xff"
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 860,
+            "column" : 16,
+            "source_fragment" : "hdr.int_shim.length = hdr.int_shim.length + ..."
+          }
+        }
+      ]
+    },
+    {
+      "name" : "int813",
+      "id" : 25,
+      "runtime_data" : [],
+      "primitives" : [
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata_t._egress_port11"]
+            },
+            {
+              "type" : "field",
+              "value" : ["standard_metadata", "egress_port"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 813,
+            "column" : 8,
+            "source_fragment" : "meta.egress_port = smeta.egress_port"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata_t._egress_tstamp13"]
+            },
+            {
+              "type" : "field",
+              "value" : ["standard_metadata", "egress_global_timestamp"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 814,
+            "column" : 8,
+            "source_fragment" : "meta.egress_tstamp = smeta.egress_global_timestamp"
+          }
+        }
+      ]
+    }
+  ],
+  "pipelines" : [
+    {
+      "name" : "ingress",
+      "id" : 0,
+      "source_info" : {
+        "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+        "line" : 454,
+        "column" : 8,
+        "source_fragment" : "IntIngress"
+      },
+      "init_table" : "tbl_int583",
+      "tables" : [
+        {
+          "name" : "tbl_int583",
+          "id" : 0,
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 583,
+            "column" : 8,
+            "source_fragment" : "ingress_pkt_counter.count((bit<32>) smeta.ingress_port)"
+          },
+          "key" : [],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [13],
+          "actions" : ["int583"],
+          "base_default_next" : "node_3",
+          "next_tables" : {
+            "int583" : "node_3"
+          },
+          "default_entry" : {
+            "action_id" : 13,
+            "action_const" : true,
+            "action_data" : [],
+            "action_entry_const" : true
+          }
+        },
+        {
+          "name" : "IntIngress.ipv4_lpm",
+          "id" : 1,
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 512,
+            "column" : 10,
+            "source_fragment" : "ipv4_lpm"
+          },
+          "key" : [
+            {
+              "match_type" : "lpm",
+              "name" : "hdr.ipv4.dst_addr",
+              "target" : ["ipv4", "dst_addr"],
+              "mask" : null
+            }
+          ],
+          "match_type" : "lpm",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [5, 6, 0],
+          "actions" : ["IntIngress.ipv4_forward", "IntIngress.drop_packet", "NoAction"],
+          "base_default_next" : "node_5",
+          "next_tables" : {
+            "IntIngress.ipv4_forward" : "node_5",
+            "IntIngress.drop_packet" : "node_5",
+            "NoAction" : "node_5"
+          },
+          "default_entry" : {
+            "action_id" : 6,
+            "action_const" : false,
+            "action_data" : [],
+            "action_entry_const" : false
+          }
+        },
+        {
+          "name" : "IntIngress.int_transit_table",
+          "id" : 2,
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 555,
+            "column" : 10,
+            "source_fragment" : "int_transit_table"
+          },
+          "key" : [
+            {
+              "match_type" : "exact",
+              "name" : "hdr.int_shim.$valid$",
+              "target" : ["int_shim", "$valid$"],
+              "mask" : null
+            }
+          ],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 2,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [9, 3],
+          "actions" : ["IntIngress.int_set_transit", "NoAction"],
+          "base_default_next" : "IntIngress.int_sink_table",
+          "next_tables" : {
+            "IntIngress.int_set_transit" : "IntIngress.int_sink_table",
+            "NoAction" : "IntIngress.int_sink_table"
+          },
+          "default_entry" : {
+            "action_id" : 3,
+            "action_const" : false,
+            "action_data" : [],
+            "action_entry_const" : false
+          }
+        },
+        {
+          "name" : "IntIngress.int_sink_table",
+          "id" : 3,
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 542,
+            "column" : 10,
+            "source_fragment" : "int_sink_table"
+          },
+          "key" : [
+            {
+              "match_type" : "exact",
+              "name" : "smeta.egress_spec",
+              "target" : ["standard_metadata", "egress_spec"],
+              "mask" : null
+            }
+          ],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 64,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [8, 2],
+          "actions" : ["IntIngress.int_set_sink", "NoAction"],
+          "base_default_next" : "tbl_int593",
+          "next_tables" : {
+            "IntIngress.int_set_sink" : "tbl_int593",
+            "NoAction" : "tbl_int593"
+          },
+          "default_entry" : {
+            "action_id" : 2,
+            "action_const" : false,
+            "action_data" : [],
+            "action_entry_const" : false
+          }
+        },
+        {
+          "name" : "tbl_int593",
+          "id" : 4,
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 593,
+            "column" : 16,
+            "source_fragment" : "int_pkt_counter.count((bit<32>) smeta.ingress_port)"
+          },
+          "key" : [],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [12],
+          "actions" : ["int593"],
+          "base_default_next" : "node_9",
+          "next_tables" : {
+            "int593" : "node_9"
+          },
+          "default_entry" : {
+            "action_id" : 12,
+            "action_const" : true,
+            "action_data" : [],
+            "action_entry_const" : true
+          }
+        },
+        {
+          "name" : "IntIngress.int_report_config",
+          "id" : 5,
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 569,
+            "column" : 10,
+            "source_fragment" : "int_report_config"
+          },
+          "key" : [
+            {
+              "match_type" : "exact",
+              "name" : "meta.int_meta.sink",
+              "target" : ["scalars", "metadata_t._int_meta_sink1"],
+              "mask" : null
+            }
+          ],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 2,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [10, 4],
+          "actions" : ["IntIngress.int_set_report_config", "NoAction"],
+          "base_default_next" : "tbl_int606",
+          "next_tables" : {
+            "IntIngress.int_set_report_config" : "tbl_int606",
+            "NoAction" : "tbl_int606"
+          },
+          "default_entry" : {
+            "action_id" : 4,
+            "action_const" : false,
+            "action_data" : [],
+            "action_entry_const" : false
+          }
+        },
+        {
+          "name" : "tbl_int606",
+          "id" : 6,
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 606,
+            "column" : 20,
+            "source_fragment" : "report_seq_reg.read(meta.report_seq_no, 0); ..."
+          },
+          "key" : [],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [11],
+          "actions" : ["int606"],
+          "base_default_next" : "tbl_int622",
+          "next_tables" : {
+            "int606" : "tbl_int622"
+          },
+          "default_entry" : {
+            "action_id" : 11,
+            "action_const" : true,
+            "action_data" : [],
+            "action_entry_const" : true
+          }
+        },
+        {
+          "name" : "IntIngress.int_source_table",
+          "id" : 7,
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 526,
+            "column" : 10,
+            "source_fragment" : "int_source_table"
+          },
+          "key" : [
+            {
+              "match_type" : "ternary",
+              "name" : "hdr.ipv4.src_addr",
+              "target" : ["ipv4", "src_addr"],
+              "mask" : null
+            },
+            {
+              "match_type" : "ternary",
+              "name" : "hdr.ipv4.dst_addr",
+              "target" : ["ipv4", "dst_addr"],
+              "mask" : null
+            },
+            {
+              "match_type" : "ternary",
+              "name" : "meta.l4_src_port",
+              "target" : ["scalars", "metadata_t._l4_src_port8"],
+              "mask" : null
+            },
+            {
+              "match_type" : "ternary",
+              "name" : "meta.l4_dst_port",
+              "target" : ["scalars", "metadata_t._l4_dst_port9"],
+              "mask" : null
+            }
+          ],
+          "match_type" : "ternary",
+          "type" : "simple",
+          "max_size" : 256,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [7, 1],
+          "actions" : ["IntIngress.int_set_source", "NoAction"],
+          "base_default_next" : "tbl_int622",
+          "next_tables" : {
+            "IntIngress.int_set_source" : "tbl_int622",
+            "NoAction" : "tbl_int622"
+          },
+          "default_entry" : {
+            "action_id" : 1,
+            "action_const" : false,
+            "action_data" : [],
+            "action_entry_const" : false
+          }
+        },
+        {
+          "name" : "tbl_int622",
+          "id" : 8,
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 622,
+            "column" : 26,
+            "source_fragment" : "="
+          },
+          "key" : [],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [14],
+          "actions" : ["int622"],
+          "base_default_next" : null,
+          "next_tables" : {
+            "int622" : null
+          },
+          "default_entry" : {
+            "action_id" : 14,
+            "action_const" : true,
+            "action_data" : [],
+            "action_entry_const" : true
+          }
+        }
+      ],
+      "action_profiles" : [],
+      "conditionals" : [
+        {
+          "name" : "node_3",
+          "id" : 0,
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 585,
+            "column" : 12,
+            "source_fragment" : "hdr.ipv4.isValid()"
+          },
+          "expression" : {
+            "type" : "expression",
+            "value" : {
+              "op" : "d2b",
+              "left" : null,
+              "right" : {
+                "type" : "field",
+                "value" : ["ipv4", "$valid$"]
+              }
+            }
+          },
+          "true_next" : "IntIngress.ipv4_lpm",
+          "false_next" : "tbl_int622"
+        },
+        {
+          "name" : "node_5",
+          "id" : 1,
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 589,
+            "column" : 16,
+            "source_fragment" : "hdr.int_shim.isValid()"
+          },
+          "expression" : {
+            "type" : "expression",
+            "value" : {
+              "op" : "d2b",
+              "left" : null,
+              "right" : {
+                "type" : "field",
+                "value" : ["int_shim", "$valid$"]
+              }
+            }
+          },
+          "true_next" : "IntIngress.int_transit_table",
+          "false_next" : "IntIngress.int_source_table"
+        },
+        {
+          "name" : "node_9",
+          "id" : 2,
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 595,
+            "column" : 20,
+            "source_fragment" : "meta.int_meta.sink == 1"
+          },
+          "expression" : {
+            "type" : "expression",
+            "value" : {
+              "op" : "==",
+              "left" : {
+                "type" : "field",
+                "value" : ["scalars", "metadata_t._int_meta_sink1"]
+              },
+              "right" : {
+                "type" : "hexstr",
+                "value" : "0x01"
+              }
+            }
+          },
+          "true_next" : "IntIngress.int_report_config",
+          "false_next" : "tbl_int622"
+        }
+      ]
+    },
+    {
+      "name" : "egress",
+      "id" : 1,
+      "source_info" : {
+        "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+        "line" : 629,
+        "column" : 8,
+        "source_fragment" : "IntEgress"
+      },
+      "init_table" : "tbl_int813",
+      "tables" : [
+        {
+          "name" : "tbl_int813",
+          "id" : 9,
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 813,
+            "column" : 25,
+            "source_fragment" : "= smeta.egress_port; ..."
+          },
+          "key" : [],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [25],
+          "actions" : ["int813"],
+          "base_default_next" : "node_17",
+          "next_tables" : {
+            "int813" : "node_17"
+          },
+          "default_entry" : {
+            "action_id" : 25,
+            "action_const" : true,
+            "action_data" : [],
+            "action_entry_const" : true
+          }
+        },
+        {
+          "name" : "tbl_int_source_add_shim",
+          "id" : 10,
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 823,
+            "column" : 16,
+            "source_fragment" : "int_source_add_shim()"
+          },
+          "key" : [],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [15],
+          "actions" : ["IntEgress.int_source_add_shim"],
+          "base_default_next" : "node_20",
+          "next_tables" : {
+            "IntEgress.int_source_add_shim" : "node_20"
+          },
+          "default_entry" : {
+            "action_id" : 15,
+            "action_const" : true,
+            "action_data" : [],
+            "action_entry_const" : true
+          }
+        },
+        {
+          "name" : "tbl_int831",
+          "id" : 11,
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 831,
+            "column" : 49,
+            "source_fragment" : "= hdr.int_header.remaining_hop_cnt - 1; ..."
+          },
+          "key" : [],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [23],
+          "actions" : ["int831"],
+          "base_default_next" : "node_22",
+          "next_tables" : {
+            "int831" : "node_22"
+          },
+          "default_entry" : {
+            "action_id" : 23,
+            "action_const" : true,
+            "action_data" : [],
+            "action_entry_const" : true
+          }
+        },
+        {
+          "name" : "tbl_int_transit_add_switch_id",
+          "id" : 12,
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 838,
+            "column" : 20,
+            "source_fragment" : "int_transit_add_switch_id()"
+          },
+          "key" : [],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [16],
+          "actions" : ["IntEgress.int_transit_add_switch_id"],
+          "base_default_next" : "node_24",
+          "next_tables" : {
+            "IntEgress.int_transit_add_switch_id" : "node_24"
+          },
+          "default_entry" : {
+            "action_id" : 16,
+            "action_const" : true,
+            "action_data" : [],
+            "action_entry_const" : true
+          }
+        },
+        {
+          "name" : "tbl_int_transit_add_port_ids",
+          "id" : 13,
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 841,
+            "column" : 20,
+            "source_fragment" : "int_transit_add_port_ids()"
+          },
+          "key" : [],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [17],
+          "actions" : ["IntEgress.int_transit_add_port_ids"],
+          "base_default_next" : "node_26",
+          "next_tables" : {
+            "IntEgress.int_transit_add_port_ids" : "node_26"
+          },
+          "default_entry" : {
+            "action_id" : 17,
+            "action_const" : true,
+            "action_data" : [],
+            "action_entry_const" : true
+          }
+        },
+        {
+          "name" : "tbl_int_transit_add_hop_latency",
+          "id" : 14,
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 844,
+            "column" : 20,
+            "source_fragment" : "int_transit_add_hop_latency()"
+          },
+          "key" : [],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [18],
+          "actions" : ["IntEgress.int_transit_add_hop_latency"],
+          "base_default_next" : "node_28",
+          "next_tables" : {
+            "IntEgress.int_transit_add_hop_latency" : "node_28"
+          },
+          "default_entry" : {
+            "action_id" : 18,
+            "action_const" : true,
+            "action_data" : [],
+            "action_entry_const" : true
+          }
+        },
+        {
+          "name" : "tbl_int_transit_add_q_occupancy",
+          "id" : 15,
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 847,
+            "column" : 20,
+            "source_fragment" : "int_transit_add_q_occupancy()"
+          },
+          "key" : [],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [19],
+          "actions" : ["IntEgress.int_transit_add_q_occupancy"],
+          "base_default_next" : "node_30",
+          "next_tables" : {
+            "IntEgress.int_transit_add_q_occupancy" : "node_30"
+          },
+          "default_entry" : {
+            "action_id" : 19,
+            "action_const" : true,
+            "action_data" : [],
+            "action_entry_const" : true
+          }
+        },
+        {
+          "name" : "tbl_int_transit_add_ingress_tstamp",
+          "id" : 16,
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 850,
+            "column" : 20,
+            "source_fragment" : "int_transit_add_ingress_tstamp()"
+          },
+          "key" : [],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [20],
+          "actions" : ["IntEgress.int_transit_add_ingress_tstamp"],
+          "base_default_next" : "node_32",
+          "next_tables" : {
+            "IntEgress.int_transit_add_ingress_tstamp" : "node_32"
+          },
+          "default_entry" : {
+            "action_id" : 20,
+            "action_const" : true,
+            "action_data" : [],
+            "action_entry_const" : true
+          }
+        },
+        {
+          "name" : "tbl_int_transit_add_egress_tstamp",
+          "id" : 17,
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 853,
+            "column" : 20,
+            "source_fragment" : "int_transit_add_egress_tstamp()"
+          },
+          "key" : [],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [21],
+          "actions" : ["IntEgress.int_transit_add_egress_tstamp"],
+          "base_default_next" : "tbl_int857",
+          "next_tables" : {
+            "IntEgress.int_transit_add_egress_tstamp" : "tbl_int857"
+          },
+          "default_entry" : {
+            "action_id" : 21,
+            "action_const" : true,
+            "action_data" : [],
+            "action_entry_const" : true
+          }
+        },
+        {
+          "name" : "tbl_int857",
+          "id" : 18,
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 857,
+            "column" : 35,
+            "source_fragment" : "= hdr.ipv4.total_len + meta.int_meta.insert_byte_cnt; ..."
+          },
+          "key" : [],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [24],
+          "actions" : ["int857"],
+          "base_default_next" : "node_35",
+          "next_tables" : {
+            "int857" : "node_35"
+          },
+          "default_entry" : {
+            "action_id" : 24,
+            "action_const" : true,
+            "action_data" : [],
+            "action_entry_const" : true
+          }
+        },
+        {
+          "name" : "tbl_int_sink_remove_headers",
+          "id" : 19,
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 870,
+            "column" : 16,
+            "source_fragment" : "int_sink_remove_headers()"
+          },
+          "key" : [],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [22],
+          "actions" : ["IntEgress.int_sink_remove_headers"],
+          "base_default_next" : null,
+          "next_tables" : {
+            "IntEgress.int_sink_remove_headers" : null
+          },
+          "default_entry" : {
+            "action_id" : 22,
+            "action_const" : true,
+            "action_data" : [],
+            "action_entry_const" : true
+          }
+        }
+      ],
+      "action_profiles" : [],
+      "conditionals" : [
+        {
+          "name" : "node_17",
+          "id" : 3,
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 816,
+            "column" : 12,
+            "source_fragment" : "smeta.instance_type == PKT_INSTANCE_TYPE_INGRESS_CLONE"
+          },
+          "expression" : {
+            "type" : "expression",
+            "value" : {
+              "op" : "==",
+              "left" : {
+                "type" : "field",
+                "value" : ["standard_metadata", "instance_type"]
+              },
+              "right" : {
+                "type" : "hexstr",
+                "value" : "0x00000001"
+              }
+            }
+          },
+          "true_next" : null,
+          "false_next" : "node_18"
+        },
+        {
+          "name" : "node_18",
+          "id" : 4,
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 821,
+            "column" : 16,
+            "source_fragment" : "meta.int_meta.source == 1"
+          },
+          "expression" : {
+            "type" : "expression",
+            "value" : {
+              "op" : "==",
+              "left" : {
+                "type" : "field",
+                "value" : ["scalars", "metadata_t._int_meta_source0"]
+              },
+              "right" : {
+                "type" : "hexstr",
+                "value" : "0x01"
+              }
+            }
+          },
+          "true_next" : "tbl_int_source_add_shim",
+          "false_next" : "node_20"
+        },
+        {
+          "name" : "node_20",
+          "id" : 5,
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 826,
+            "column" : 16,
+            "source_fragment" : "hdr.int_shim.isValid() && ..."
+          },
+          "expression" : {
+            "type" : "expression",
+            "value" : {
+              "op" : "and",
+              "left" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "d2b",
+                  "left" : null,
+                  "right" : {
+                    "type" : "field",
+                    "value" : ["int_shim", "$valid$"]
+                  }
+                }
+              },
+              "right" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : ">",
+                  "left" : {
+                    "type" : "field",
+                    "value" : ["int_header", "remaining_hop_cnt"]
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0x00"
+                  }
+                }
+              }
+            }
+          },
+          "true_next" : "tbl_int831",
+          "false_next" : "node_35"
+        },
+        {
+          "name" : "node_22",
+          "id" : 6,
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 837,
+            "column" : 20,
+            "source_fragment" : "(hdr.int_header.instruction_mask & INT_SWITCH_ID_MASK) != 0"
+          },
+          "expression" : {
+            "type" : "expression",
+            "value" : {
+              "op" : "!=",
+              "left" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "field",
+                    "value" : ["int_header", "instruction_mask"]
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0x8000"
+                  }
+                }
+              },
+              "right" : {
+                "type" : "hexstr",
+                "value" : "0x0000"
+              }
+            }
+          },
+          "true_next" : "tbl_int_transit_add_switch_id",
+          "false_next" : "node_24"
+        },
+        {
+          "name" : "node_24",
+          "id" : 7,
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 840,
+            "column" : 20,
+            "source_fragment" : "(hdr.int_header.instruction_mask & INT_PORT_IDS_MASK) != 0"
+          },
+          "expression" : {
+            "type" : "expression",
+            "value" : {
+              "op" : "!=",
+              "left" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "field",
+                    "value" : ["int_header", "instruction_mask"]
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0x4000"
+                  }
+                }
+              },
+              "right" : {
+                "type" : "hexstr",
+                "value" : "0x0000"
+              }
+            }
+          },
+          "true_next" : "tbl_int_transit_add_port_ids",
+          "false_next" : "node_26"
+        },
+        {
+          "name" : "node_26",
+          "id" : 8,
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 843,
+            "column" : 20,
+            "source_fragment" : "(hdr.int_header.instruction_mask & INT_HOP_LATENCY_MASK) != 0"
+          },
+          "expression" : {
+            "type" : "expression",
+            "value" : {
+              "op" : "!=",
+              "left" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "field",
+                    "value" : ["int_header", "instruction_mask"]
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0x2000"
+                  }
+                }
+              },
+              "right" : {
+                "type" : "hexstr",
+                "value" : "0x0000"
+              }
+            }
+          },
+          "true_next" : "tbl_int_transit_add_hop_latency",
+          "false_next" : "node_28"
+        },
+        {
+          "name" : "node_28",
+          "id" : 9,
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 846,
+            "column" : 20,
+            "source_fragment" : "(hdr.int_header.instruction_mask & INT_QUEUE_OCC_MASK) != 0"
+          },
+          "expression" : {
+            "type" : "expression",
+            "value" : {
+              "op" : "!=",
+              "left" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "field",
+                    "value" : ["int_header", "instruction_mask"]
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0x1000"
+                  }
+                }
+              },
+              "right" : {
+                "type" : "hexstr",
+                "value" : "0x0000"
+              }
+            }
+          },
+          "true_next" : "tbl_int_transit_add_q_occupancy",
+          "false_next" : "node_30"
+        },
+        {
+          "name" : "node_30",
+          "id" : 10,
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 849,
+            "column" : 20,
+            "source_fragment" : "(hdr.int_header.instruction_mask & INT_INGRESS_TSTAMP_MASK) != 0"
+          },
+          "expression" : {
+            "type" : "expression",
+            "value" : {
+              "op" : "!=",
+              "left" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "field",
+                    "value" : ["int_header", "instruction_mask"]
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0x0800"
+                  }
+                }
+              },
+              "right" : {
+                "type" : "hexstr",
+                "value" : "0x0000"
+              }
+            }
+          },
+          "true_next" : "tbl_int_transit_add_ingress_tstamp",
+          "false_next" : "node_32"
+        },
+        {
+          "name" : "node_32",
+          "id" : 11,
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 852,
+            "column" : 20,
+            "source_fragment" : "(hdr.int_header.instruction_mask & INT_EGRESS_TSTAMP_MASK) != 0"
+          },
+          "expression" : {
+            "type" : "expression",
+            "value" : {
+              "op" : "!=",
+              "left" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "field",
+                    "value" : ["int_header", "instruction_mask"]
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0x0400"
+                  }
+                }
+              },
+              "right" : {
+                "type" : "hexstr",
+                "value" : "0x0000"
+              }
+            }
+          },
+          "true_next" : "tbl_int_transit_add_egress_tstamp",
+          "false_next" : "tbl_int857"
+        },
+        {
+          "name" : "node_35",
+          "id" : 12,
+          "source_info" : {
+            "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+            "line" : 864,
+            "column" : 16,
+            "source_fragment" : "meta.int_meta.sink == 1 && hdr.int_shim.isValid()"
+          },
+          "expression" : {
+            "type" : "expression",
+            "value" : {
+              "op" : "and",
+              "left" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "==",
+                  "left" : {
+                    "type" : "field",
+                    "value" : ["scalars", "metadata_t._int_meta_sink1"]
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0x01"
+                  }
+                }
+              },
+              "right" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "d2b",
+                  "left" : null,
+                  "right" : {
+                    "type" : "field",
+                    "value" : ["int_shim", "$valid$"]
+                  }
+                }
+              }
+            }
+          },
+          "false_next" : null,
+          "true_next" : "tbl_int_sink_remove_headers"
+        }
+      ]
+    }
+  ],
+  "checksums" : [
+    {
+      "name" : "cksum",
+      "id" : 0,
+      "source_info" : {
+        "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+        "line" : 883,
+        "column" : 8,
+        "source_fragment" : "update_checksum( ..."
+      },
+      "target" : ["report_ipv4", "hdr_checksum"],
+      "type" : "generic",
+      "calculation" : "calc",
+      "verify" : false,
+      "update" : true,
+      "if_cond" : {
+        "type" : "expression",
+        "value" : {
+          "op" : "d2b",
+          "left" : null,
+          "right" : {
+            "type" : "field",
+            "value" : ["report_ipv4", "$valid$"]
+          }
+        }
+      }
+    },
+    {
+      "name" : "cksum_0",
+      "id" : 1,
+      "source_info" : {
+        "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+        "line" : 894,
+        "column" : 8,
+        "source_fragment" : "update_checksum( ..."
+      },
+      "target" : ["ipv4", "hdr_checksum"],
+      "type" : "generic",
+      "calculation" : "calc_0",
+      "verify" : false,
+      "update" : true,
+      "if_cond" : {
+        "type" : "expression",
+        "value" : {
+          "op" : "d2b",
+          "left" : null,
+          "right" : {
+            "type" : "field",
+            "value" : ["ipv4", "$valid$"]
+          }
+        }
+      }
+    },
+    {
+      "name" : "cksum_1",
+      "id" : 2,
+      "source_info" : {
+        "filename" : "/root/int_p4_project/topology/../p4src/int.p4",
+        "line" : 437,
+        "column" : 8,
+        "source_fragment" : "verify_checksum( ..."
+      },
+      "target" : ["ipv4", "hdr_checksum"],
+      "type" : "generic",
+      "calculation" : "calc_1",
+      "verify" : true,
+      "update" : false,
+      "if_cond" : {
+        "type" : "expression",
+        "value" : {
+          "op" : "d2b",
+          "left" : null,
+          "right" : {
+            "type" : "field",
+            "value" : ["ipv4", "$valid$"]
+          }
+        }
+      }
+    }
+  ],
+  "force_arith" : [],
+  "extern_instances" : [],
+  "field_aliases" : [
+    [
+      "queueing_metadata.enq_timestamp",
+      ["standard_metadata", "enq_timestamp"]
+    ],
+    [
+      "queueing_metadata.enq_qdepth",
+      ["standard_metadata", "enq_qdepth"]
+    ],
+    [
+      "queueing_metadata.deq_timedelta",
+      ["standard_metadata", "deq_timedelta"]
+    ],
+    [
+      "queueing_metadata.deq_qdepth",
+      ["standard_metadata", "deq_qdepth"]
+    ],
+    [
+      "intrinsic_metadata.ingress_global_timestamp",
+      ["standard_metadata", "ingress_global_timestamp"]
+    ],
+    [
+      "intrinsic_metadata.egress_global_timestamp",
+      ["standard_metadata", "egress_global_timestamp"]
+    ],
+    [
+      "intrinsic_metadata.mcast_grp",
+      ["standard_metadata", "mcast_grp"]
+    ],
+    [
+      "intrinsic_metadata.egress_rid",
+      ["standard_metadata", "egress_rid"]
+    ],
+    [
+      "intrinsic_metadata.priority",
+      ["standard_metadata", "priority"]
+    ]
+  ],
+  "program" : "/root/int_p4_project/topology/../p4src/int.p4",
+  "__meta__" : {
+    "version" : [2, 23],
+    "compiler" : "https://github.com/p4lang/p4c"
+  }
+}
