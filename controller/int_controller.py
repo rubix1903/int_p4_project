@@ -502,7 +502,7 @@ class IntTableConfigurator:
                     "ipv4.dst_addr": {"ternary": {"value": flow["dst"], "mask": "255.255.255.255"}},
                     "l4_dst_port":   {"ternary": {"value": flow.get("port", 0), "mask": 0xFFFF}}
                 },
-                "action": {"name": "IntIngress.int_set_source", "params": {}}
+                "action": {"name": "IntIngress.int_set_source", "params": {"switch_id": 1}}
             }
             self.entries[switch_id].append(entry)
             logger.info(f"  [SW:{switch_id}] INT SOURCE enabled for {flow['src']} → {flow['dst']}")

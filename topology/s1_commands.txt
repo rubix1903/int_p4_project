@@ -4,7 +4,7 @@ table_add IntIngress.ipv4_lpm IntIngress.ipv4_forward 10.0.3.0/24 => 00:00:0a:00
 table_add IntIngress.ipv4_lpm IntIngress.ipv4_forward 10.0.1.0/24 => 00:00:0a:00:01:01 1
 
 # INT Source - enable for all flows from h1 to h2
-table_add IntIngress.int_source_table IntIngress.int_set_source 10.0.1.0&&&255.255.255.0 10.0.3.0&&&255.255.255.0 0&&&0 0&&&0 => 1
+table_add IntIngress.int_source_table IntIngress.int_set_source 10.0.1.0&&&255.255.255.0 10.0.3.0&&&255.255.255.0 0&&&0 0&&&0 => 1 1
 
 # INT Transit role (also transit when INT packets pass through)
 table_add IntIngress.int_transit_table IntIngress.int_set_transit 1 => 1

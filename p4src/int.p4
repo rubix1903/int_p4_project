@@ -484,8 +484,9 @@ control IntIngress(
     }
 
     /* Mark this switch as INT SOURCE - initiates INT header insertion */
-    action int_set_source() {
-        meta.int_meta.source = 1;
+    action int_set_source(bit<32> switch_id) {
+        meta.int_meta.source    = 1;
+        meta.int_meta.switch_id = switch_id;
     }
 
     /* Mark this switch as INT SINK - strips headers, generates report */
