@@ -65,7 +65,8 @@ except ImportError:
 # ---------------------------------------------------------------
 # P4 Switch configuration
 # ---------------------------------------------------------------
-P4_PROG      = os.path.join(os.path.dirname(__file__), "../p4src/int.p4")
+TOPOLOGY_DIR = os.path.dirname(os.path.abspath(__file__))
+P4_PROG      = os.path.abspath(os.path.join(TOPOLOGY_DIR, "..", "p4src", "int.p4"))
 BMV2_EXE     = "simple_switch"
 THRIFT_PORT_BASE = 9090
 
@@ -112,17 +113,19 @@ def run_p4utils_topology(json_path: str):
     net.addHost("h2")
     net.addHost("collector")  # INT collector host
 
-    # Add P4 switches
+    # Add P4 switches. Paths are absolute so the script works from any cwd.
     for sw_name in ["s1", "s2", "s3", "s4"]:
-        cfg = SWITCH_CONFIG[sw_name]
         net.addP4Switch(
             sw_name,
-            cli_input=f"topology/{sw_name}_commands.txt",
+            cli_input=os.path.join(TOPOLOGY_DIR, f"{sw_name}_commands.txt"),
             log_enabled=True,
             log_dir=f"logs/{sw_name}"
         )
 
-    # Set P4 program for all switches
+    # Load int.p4 on every switch. Without this the switches start with no
+    # P4 program ("started with no P4") and every table_add fails with
+    # "Invalid table name". p4utils compiles the source itself.
+    net.setP4SourceAll(P4_PROG)
 
 
     # Ports are pinned so they match topology/s*_commands.txt.
