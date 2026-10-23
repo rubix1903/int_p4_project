@@ -9,3 +9,7 @@ log/
 build/
 pcaps/
 *.p4i
+
+# compiled P4 output
+p4src/int.json
+p4src/int.p4i
