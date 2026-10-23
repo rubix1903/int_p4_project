@@ -924,8 +924,6 @@ control IntDeparser(
 
         packet.emit(hdr.ethernet);
         packet.emit(hdr.ipv4);
-        packet.emit(hdr.tcp);
-        packet.emit(hdr.udp);
         packet.emit(hdr.int_shim);
         packet.emit(hdr.int_header);
 
@@ -985,6 +983,16 @@ control IntDeparser(
         packet.emit(hdr.int_egress_tx_util);
 
         packet.emit(hdr.int_tail);
+
+        /* The original L4 header goes AFTER the INT stack. While INT is
+         * present, ipv4.protocol is 0xFD, so every downstream parser goes
+         * straight from IPv4 to the INT shim and never extracts L4; the
+         * L4 bytes travel as payload behind int_tail. Emitting tcp/udp
+         * before the shim (as before) made the next switch read the L4
+         * header as the shim. For packets without INT the INT headers are
+         * invalid (0 bytes), so L4 still follows IPv4 directly. */
+        packet.emit(hdr.tcp);
+        packet.emit(hdr.udp);
     }
 }
 
