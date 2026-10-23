@@ -34,6 +34,7 @@ jobs:
         run: |
           pip install pytest
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          python -m unittest discover -s scripts -p "int_tests.py" -v
           if find . -path ./.venv -prune -o -name "test_*.py" -print | grep -q .; then pytest; else echo "No tests yet"; fi
 
   p4:

@@ -1,0 +1,2 @@
+# Run on s1 to shift h1->h2 traffic onto the S4 path (more specific /32 beats the /24 route)
+table_add IntIngress.ipv4_lpm IntIngress.ipv4_forward 10.0.3.2/32 => 00:00:0a:00:03:02 3

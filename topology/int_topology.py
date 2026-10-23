@@ -125,18 +125,20 @@ def run_p4utils_topology(json_path: str):
     # Set P4 program for all switches
 
 
-    # Connect hosts
-    net.addLink("h1",        "s1", delay="1ms",   bw=100)
-    net.addLink("h2",        "s3", delay="1ms",   bw=100)
-    net.addLink("collector", "s3", delay="0.1ms", bw=1000)
+    # Ports are pinned so they match topology/s*_commands.txt.
+    # s1: 1=h1 2=s2 3=s4 | s2: 1=s1 2=s3 | s4: 1=s1 2=s3
+    # s3: 1=collector 2=h2 3=s2 4=s4
+    net.addLink("h1",        "s1", port2=1, delay="1ms",   bw=100)
+    net.addLink("collector", "s3", port2=1, delay="0.1ms", bw=1000)
+    net.addLink("h2",        "s3", port2=2, delay="1ms",   bw=100)
 
-    # Primary path: S1 → S2 → S3
-    net.addLink("s1", "s2", delay="5ms",  bw=100)
-    net.addLink("s2", "s3", delay="5ms",  bw=100)
+    # Primary path: S1 -> S2 -> S3
+    net.addLink("s1", "s2", port1=2, port2=1, delay="5ms", bw=100)
+    net.addLink("s2", "s3", port1=2, port2=3, delay="5ms", bw=100)
 
-    # Alternate path: S1 → S4 → S3
-    net.addLink("s1", "s4", delay="10ms", bw=100)
-    net.addLink("s4", "s3", delay="10ms", bw=100)
+    # Alternate path: S1 -> S4 -> S3 (activated with topology/s1_alt_path.txt)
+    net.addLink("s1", "s4", port1=3, port2=1, delay="10ms", bw=100)
+    net.addLink("s4", "s3", port1=2, port2=4, delay="10ms", bw=100)
 
     # Configure IP addresses
     net.setIntfIp("h1", "s1", ip="10.0.1.1/24")

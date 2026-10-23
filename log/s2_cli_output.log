@@ -1,7 +1,0 @@
-Obtaining JSON from switch...
-Done
-Control utility for runtime P4 table manipulation
-RuntimeCmd: Error: Invalid table name (IntIngress.ipv4_lpm)
-RuntimeCmd: Error: Invalid table name (IntIngress.ipv4_lpm)
-RuntimeCmd: Error: Invalid table name (IntIngress.int_transit_table)
-RuntimeCmd: 

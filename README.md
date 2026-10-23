@@ -62,7 +62,7 @@ int_p4_project/
          └───┬────────┘                         └─────────┬──┘
               │          ┌──────────────────────┐          │    ┌───────────┐
               │          │      S4 (Transit)    │          │    │ Collector │
-              └──────────┤  Alternate path ECMP ├──────────┘    │  :54321  │
+              └──────────┤  Alternate path (manual reroute) ├──────────┘    │  :54321  │
                          └──────────────────────┘               └───────────┘
 ```
 
@@ -144,7 +144,7 @@ Default mask `0xFC00` = all 6 standard fields = **32 bytes per hop** (4+4+4+4+8+
 ## What to Observe
 
 ### Path Change Detection
-When traffic shifts from S2 to S4 path (ECMP rerouting or link failure simulation),
+When traffic shifts from S2 to S4 path (run `topology/s1_alt_path.txt` on S1 to reroute),
 the controller immediately logs:
 ```
 ⚡ PATH CHANGE for 10.0.1.1:12345 → 10.0.3.2:5001 [UDP]:

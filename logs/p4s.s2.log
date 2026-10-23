@@ -1,9 +1,0 @@
-Calling target program-options parser
-Adding interface s2-eth1 as port 1
-[11:39:01.020] [bmv2] [D] [thread 86956] Adding interface s2-eth1 as port 1
-Adding interface s2-eth2 as port 2
-[11:39:01.056] [bmv2] [D] [thread 86956] Adding interface s2-eth2 as port 2
-[11:39:01.084] [bmv2] [I] [thread 86956] Starting Thrift server on port 9091
-[11:39:01.084] [bmv2] [I] [thread 86956] Thrift server was started
-[11:39:01.084] [bmv2] [E] [thread 86956] The switch was started with no P4 and config swap is disabled
-[11:39:01.871] [bmv2] [T] [thread 87035] bm_get_config

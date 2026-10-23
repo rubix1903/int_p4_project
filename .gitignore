@@ -1,2 +1,11 @@
-
 .idea/
+__pycache__/
+*.pyc
+.coverage
+*:Zone.Identifier
+*.pcap
+logs/
+log/
+build/
+pcaps/
+*.p4i

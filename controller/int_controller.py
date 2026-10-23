@@ -154,7 +154,9 @@ class IntReportDecoder:
         | INT Shim | INT Header | [Hop Metadta × N] (hop-major)
         """
         try:
-            offset = self.OUTER_ETH_HDR_LEN  # raw INT packet: just skip Ethernet
+            # Skip outer Ethernet + IPv4 + UDP; the report headers follow.
+            offset = (self.OUTER_ETH_HDR_LEN + self.OUTER_IPV4_HDR_LEN
+                      + self.OUTER_UDP_HDR_LEN)
 
             if len(raw_packet) < offset + self.REPORT_GROUP_HDR_LEN + self.REPORT_INDIVIDUAL_HDR_LEN:
                 return None
