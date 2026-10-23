@@ -52,6 +52,15 @@ const bit<32> PKT_INSTANCE_TYPE_INGRESS_CLONE = 1;
 /* Fixed INT overhead added once at the source: shim(4B) + header(8B) + tail(4B) */
 const bit<16> INT_FIXED_OVERHEAD_BYTES = 16;
 
+/* Report wrapper sizes. The report is: outer IPv4 (20) + UDP (8) +
+ * report group header (9) + report individual header (4) + the cloned
+ * frame (inner Ethernet 14 + inner IPv4 total_len).
+ *   outer IPv4 total_len = 20 + 8 + 13 + 14 + inner = inner + 55
+ *   outer UDP length     =      8 + 13 + 14 + inner = inner + 35 */
+const bit<16> REPORT_IP_OVERHEAD_BYTES  = 55;
+const bit<16> REPORT_UDP_OVERHEAD_BYTES = 35;
+const bit<16> REPORT_UDP_SRC_PORT       = 49999;
+
 
 /* HEADERS
  * -----------*/
@@ -814,7 +823,53 @@ control IntEgress(
         meta.egress_tstamp = smeta.egress_global_timestamp;
 
         if (smeta.instance_type == PKT_INSTANCE_TYPE_INGRESS_CLONE) {
-            /* Raw INT packet forwarded directly to collector - no outer encapsulation */
+            /* === TELEMETRY REPORT (the I2E clone made at the sink) ===
+             * The clone still holds the original frame with its INT stack
+             * (the strip happens only on the non-clone copy). Wrap it in
+             * Ethernet / IPv4 / UDP addressed to the collector, followed by
+             * the report headers. The report_* metadata was filled by
+             * int_report_config in ingress and carried over by the field
+             * list passed to clone_preserving_field_list. The deparser
+             * emits these headers first, then the original frame. */
+            hdr.report_eth.setValid();
+            hdr.report_eth.dst_addr   = meta.report_collector_mac;
+            hdr.report_eth.src_addr   = meta.report_switch_mac;
+            hdr.report_eth.ether_type = TYPE_IPV4;
+
+            hdr.report_ipv4.setValid();
+            hdr.report_ipv4.version        = 4;
+            hdr.report_ipv4.ihl            = 5;
+            hdr.report_ipv4.diffserv       = 0;
+            hdr.report_ipv4.total_len      = hdr.ipv4.total_len + REPORT_IP_OVERHEAD_BYTES;
+            hdr.report_ipv4.identification = 0;
+            hdr.report_ipv4.flags          = 0;
+            hdr.report_ipv4.frag_offset    = 0;
+            hdr.report_ipv4.ttl            = 64;
+            hdr.report_ipv4.protocol       = PROTO_UDP;
+            hdr.report_ipv4.hdr_checksum   = 0;  /* IntComputeChecksum fills it */
+            hdr.report_ipv4.src_addr       = meta.report_switch_ip;
+            hdr.report_ipv4.dst_addr       = meta.report_collector_ip;
+
+            hdr.report_udp.setValid();
+            hdr.report_udp.src_port = REPORT_UDP_SRC_PORT;
+            hdr.report_udp.dst_port = meta.report_collector_port;
+            hdr.report_udp.length   = hdr.ipv4.total_len + REPORT_UDP_OVERHEAD_BYTES;
+            hdr.report_udp.checksum = 0;          /* optional over IPv4 */
+
+            hdr.report_group_hdr.setValid();
+            hdr.report_group_hdr.ver     = 0;
+            hdr.report_group_hdr.hw_id   = 0;
+            hdr.report_group_hdr.seq_no  = meta.report_seq_no;
+            hdr.report_group_hdr.node_id = meta.int_meta.switch_id;
+
+            hdr.report_individual_hdr.setValid();
+            hdr.report_individual_hdr.rep_type           = 1;
+            hdr.report_individual_hdr.in_type            = 0;
+            hdr.report_individual_hdr.dropped            = 0;
+            hdr.report_individual_hdr.congested_queue    = 0;
+            hdr.report_individual_hdr.path_tracking_flow = 0;
+            hdr.report_individual_hdr.rsvd               = 0;
+            hdr.report_individual_hdr.hw_id              = 0;
         } else {
             /* === Normal (non-clone) packet processing === */
 
